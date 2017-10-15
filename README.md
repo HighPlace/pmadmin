@@ -1,28 +1,109 @@
-# Pmadmin
+[![Build Status](https://travis-ci.org/cipchk/ng-alain.svg?branch=master)](https://travis-ci.org/cipchk/ng-alain)
+[![Dependency Status](https://david-dm.org/cipchk/ng-alain/status.svg)](https://david-dm.org/cipchk/ng-alain)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.4.2.
+# ng-alain
 
-## Development server
+[Ng-zorro-antd](https://github.com/NG-ZORRO/ng-zorro-antd) admin panel front-end framework.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+更多信息见[中文 README](README-zh_CN.md)
 
-## Code scaffolding
+[DEMO](https://cipchk.github.io/ng-alain/)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Quick start
 
-## Build
+Make sure you have Node version >= 6.9.0 and NPM >= 3 or higher.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+```bash
+# clone ng-alain repo
+# --depth 1 removes all but one .git commit history
+git clone --depth 1 https://github.com/cipchk/ng-alain.git
 
-## Running unit tests
+# change directory
+cd ng-alain
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+# install npm package
+# in china please use cnpm （https://github.com/cnpm/cnpm）
+npm install
 
-## Running end-to-end tests
+# start the serve
+npm start
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
+# use HMR
+npm run serve:hmr
+```
 
-## Further help
+> [vscode] recommended install [ng-zorro-vscode](https://marketplace.visualstudio.com/items?itemName=cipchk.ng-zorro-vscode) plugins, that includes `nz-alain-*` snippets.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+## Environment
+
+| package | version |
+| ------- | ------- |
+| `ng-alain` | 0.1.2-beta.3 | 
+| `ng-zorro-antd` | ^0.5.3 |
+| `@angular` | ^4.4.5 |
+| `@angular/cli` | ^1.4.7 |
+
+**Third Library[Optional]**
+
+| package | dependencie | remark |
+| ------- | ------- | ------- |
+| `font-awesome` |  |  |
+| `simple-line-icons` |  |  |
+| `weather-icons` |  |  |
+| `angular-baidu-maps` |  | BaidDu Map |
+| `angular-qq-maps` |  | QQ Map |
+| `angular-web-storage` |  | LocalStorage |
+| `ng2-charts` | `chart.js` |  |
+| `d3` |  |  |
+| `g2-angular` | `g2` |  |
+| `jquery-sparkline` | `jquery` |  |
+| `ng2-file-upload` |  |  |
+| `ng2-img-cropper` |  |  |
+| `ngx-color-picker` |  |  |
+| `ng-tree-antd` | `angular-tree-component` |  |
+| `ng2-dnd` |  |  |
+| `sweetalert` |  |  |
+| `file-saver` |  |  |
+
+## Guide Lines
+
++ [antd gruid lines](https://ant.design/docs/spec/introduce)
++ [`ng-alain` Layout Rule](_documents/layout.md)
++ [CSS Component Patch](_documents/component-patch.md)
++ [CSS Utility Rule](_documents/utils.md)
++ [Pipe](_documents/pipe.md)
++ [ACL](_documents/acl.md)
++ [Upgrade](_documents/upgrade.md)
+
+## Features
+
++ `ng-zorro-antd` based
++ Responsive Layout
++ I18n
++ ACL
++ Lazy load Assets
++ UI Router States
++ Multiple color options
++ Less preprocessor
++ Well organized & commented code
++ Simple upgrade
++ Hot Module Replacement
+
+## App Shots
+
+![desktop](_screenshot/desktop.png)
+![ipad](_screenshot/ipad.png)
+![iphone](_screenshot/iphone.png)
+
+## Troubleshooting
+
+Please follow this guidelines when reporting bugs and feature requests:
+
+1. Use [GitHub Issues](https://github.com/cipchk/ng-alain/issues) board to report bugs and feature requests (not our email address)
+2. Please **always** write steps to reproduce the error. That way we can focus on fixing the bug, not scratching our heads trying to reproduce it.
+
+Thanks for understanding!
+
+### License
+
+The MIT License (see the [LICENSE](https://github.com/cipchk/ng-alain/blob/master/LICENSE) file for the full text)
