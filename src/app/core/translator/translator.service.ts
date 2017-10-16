@@ -5,11 +5,11 @@ import { SettingsService } from '../services/settings.service';
 @Injectable()
 export class TranslatorService {
 
-    private _default = 'en';
+    private _default = 'zh-CN';
 
     private _langs = [
-        { code: 'en', text: 'English' },
-        { code: 'zh-CN', text: '中文' }
+        { code: 'zh-CN', text: '中文' },
+        { code: 'en', text: 'English' }
     ];
 
     constructor(settings: SettingsService, private translate: TranslateService) {
