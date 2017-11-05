@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { HttpInterceptor, HttpRequest, HttpHandler,
          HttpSentEvent, HttpHeaderResponse, HttpProgressEvent, HttpResponse, HttpUserEvent,
          HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs/Rx';
 import { TokenService } from './token.service';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
@@ -26,7 +26,7 @@ export class TokenInterceptor implements HttpInterceptor {
         Observable<HttpSentEvent | HttpHeaderResponse | HttpProgressEvent | HttpResponse<any> | HttpUserEvent<any>> {
         let header: HttpHeaders = null;
         // 过滤授权与多assets请求
-        if (!req.url.includes('auth/') && !req.url.includes('assets/')) {
+        if (!req.url.includes('auth/') && !req.url.includes('assets/') && !req.url.includes('/captcha-image-check')) {
             // 可以进一步处理，比如：重新刷新或重新登录
             const authData = this.injector.get(TokenService).data;
             if (!authData.access_token) {

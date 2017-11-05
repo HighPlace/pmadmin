@@ -1,7 +1,7 @@
 // tslint:disable:no-console class-name
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/do';
 import * as moment from 'moment';
 import { environment } from '../../../environments/environment';
@@ -54,6 +54,13 @@ export class _HttpClient {
         return environment.SERVER_URL;
     }
 
+    fullCgiPath(url: string): string {
+        if (!url.startsWith('https://') && !url.startsWith('http://')) {
+            url = 'https://host/api' + url;
+        }
+        return url;
+    }
+
     /**
      * GET请求
      *
@@ -61,6 +68,7 @@ export class _HttpClient {
      * @param {*} [params] 请求参数
      */
     get(url: string, params?: any): Observable<any> {
+        url = this.fullCgiPath(url);
         this.begin();
         return this.http
             .get(url, {
@@ -69,7 +77,9 @@ export class _HttpClient {
             .do(() => this.end())
             .catch((res) => {
                 this.end();
-                return res;
+                return new Observable((observer) => {
+                    observer.error(res);
+                });
             });
     }
 
@@ -81,6 +91,7 @@ export class _HttpClient {
      * @param {*} [params] 请求参数
      */
     post(url: string, body?: any, params?: any): Observable<any> {
+        url = this.fullCgiPath(url);
         this.begin();
         return this.http
             .post(url, body || null, {
@@ -100,6 +111,7 @@ export class _HttpClient {
      * @param {*} [params] 请求参数
      */
     delete(url: string, params?: any): Observable<any> {
+        url = this.fullCgiPath(url);
         this.begin();
         return this.http
             .delete(url, {
