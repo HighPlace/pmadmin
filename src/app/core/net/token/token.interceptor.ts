@@ -25,16 +25,21 @@ export class TokenInterceptor implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler):
         Observable<HttpSentEvent | HttpHeaderResponse | HttpProgressEvent | HttpResponse<any> | HttpUserEvent<any>> {
         let header: HttpHeaders = null;
+        const authData = this.injector.get(TokenService).data;
+
         // 过滤授权与多assets请求
-        if (!req.url.includes('auth/') && !req.url.includes('assets/') && !req.url.includes('/captcha-image-check')) {
+        if (!req.url.includes('/oauth/token') && !req.url.includes('assets/') && !req.url.includes('/captcha-image-check')) {
             // 可以进一步处理，比如：重新刷新或重新登录
-            const authData = this.injector.get(TokenService).data;
             if (!authData.access_token) {
                 this.goLogin();
                 return Observable.create(observer => observer.error({ status: 401 }));
             }
             // 正常token值放在请求header当中，具体格式以后端为准
             header = req.headers.set('Authorization', `Bearer ${authData.access_token}`);
+        }
+
+        if (req.url.includes('/oauth/token')) {
+            header = req.headers.set('Authorization', 'Basic YnJvd3Nlcjo=');
         }
 
         // 统一加上服务端前缀
@@ -56,6 +61,19 @@ export class TokenInterceptor implements HttpInterceptor {
                         // observer.error 会跳转至后面的 `catch`
                         // return Observable.create(observer => observer.error(event));
                     }
+
+                    if (event instanceof HttpResponse && event.status === 200) {
+                        const body = event.body || {};
+                        if (event.url.includes('/oauth/token') && body.access_token) {
+                            this.injector.get(TokenService).data = {
+                                access_token: body.access_token,
+                                expire_time: body.expires_in,
+                                refresh_token: body.refresh_token,
+                                refresh_token_valid_time: body.expires_in
+                            };
+                        }
+                    }
+
                     // 若一切都正常，则后续操作
                     return Observable.create(observer => observer.next(event));
                 })

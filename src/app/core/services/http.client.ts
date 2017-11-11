@@ -92,6 +92,8 @@ export class _HttpClient {
      */
     post(url: string, body?: any, params?: any): Observable<any> {
         url = this.fullCgiPath(url);
+        body = this.parseParams(body);
+
         this.begin();
         return this.http
             .post(url, body || null, {

@@ -1,7 +1,7 @@
 import {Router} from '@angular/router';
 import {Component} from '@angular/core';
 import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
-import {_HttpClient} from '../../../core/services/http.client';
+import {_HttpClient} from '@core/services/http.client';
 import {Observable} from 'rxjs/Rx';
 import {SettingsService} from '@core/services/settings.service';
 
@@ -13,7 +13,7 @@ export class LoginComponent {
     valForm: FormGroup;
     verifyUrl = 'https://host/api/uaa/captcha-image';
     imgSrc = '';
-    vcInt: number = 0;
+    vcInt = 0;
 
     constructor(public settings: SettingsService,
                 private http: _HttpClient,
@@ -23,13 +23,13 @@ export class LoginComponent {
             // mail: [null, Validators.compose([Validators.required, Validators.email])],
             userName: [null, Validators.required],
             password: [null, Validators.required],
-            verifyCode: [null, [], [this.verifyCodeValidator]],
-            remember_me: [null]
+            verifyCode: [null, [], [this.verifyCodeValidator]]
         });
 
         this.imgSrc = this.verifyUrl;
     }
 
+    // todo 1、验证码成功能否返回空对象，body不为空；2、能够区别出验证码错误还是过期
     verifyCodeValidator = (control: FormControl): any => {
         return Observable.create((observer) => {
             if (this.vcInt) {
@@ -50,11 +50,11 @@ export class LoginComponent {
                             }
                             observer.complete();
                         });
-                }else {
+                } else {
                     observer.next({error: true, required: true});
                     observer.complete();
                 }
-            }, 500);
+            }, 800);
 
         });
     };
@@ -65,8 +65,19 @@ export class LoginComponent {
             this.valForm.controls[i].markAsDirty();
         }
         if (this.valForm.valid) {
-            console.log('Valid!');
-            console.log(this.valForm.value);
+            const user = this.valForm.value;
+
+            this.http.post('/uaa/oauth/token', {
+                scope: 'ui',
+                username: user.userName + '|' + user.verifyCode,
+                password: user.password,
+                grant_type: 'password',
+                client_id: 'browser'
+            }).subscribe((data: any) => {
+                console.log(data);
+            }, (err: any) => {
+                console.log(err);
+            });
             this.router.navigate(['dashboard']);
         }
     }
