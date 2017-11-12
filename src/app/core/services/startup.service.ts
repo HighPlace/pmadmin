@@ -1,7 +1,6 @@
 import {Router} from '@angular/router';
 import {Injectable, Injector} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
-import {_HttpClient} from './http.client';
 import {MenuService} from './menu.service';
 import {TranslatorService} from '../translator/translator.service';
 import {SettingsService} from './settings.service';
@@ -24,7 +23,6 @@ export class StartupService {
                 private aclService: ACLService,
                 private titleService: TitleService,
                 private httpClient: HttpClient,
-                private http: _HttpClient,
                 private injector: Injector) {
     }
 
@@ -45,15 +43,7 @@ export class StartupService {
                     // 设置语言后缀
                     this.titleService.suffix = res.app.name;
 
-                    // resolve(res);
-                    this.http.get('/uaa/userinfo')
-                        .subscribe((data: any) => {
-                            console.log(data);
-                            resolve(res);
-                        }, (err: HttpErrorResponse) => {
-                            console.log(err);
-                            resolve(null);
-                        });
+                    resolve(res);
                 }, (err: HttpErrorResponse) => {
                     resolve(null);
                 });

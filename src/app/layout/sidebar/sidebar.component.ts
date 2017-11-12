@@ -26,5 +26,6 @@ export class SidebarComponent {
         });
         this.token.logout();
         this.router.navigate(['/login']);
+        // window.location.reload(true);
     }
 }

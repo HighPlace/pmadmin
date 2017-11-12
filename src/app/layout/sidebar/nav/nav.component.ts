@@ -1,6 +1,7 @@
 import { Component, ElementRef, Renderer2, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
+import {_HttpClient} from '@core/services/http.client';
 import { SettingsService } from '@core/services/settings.service';
 import { MenuService, Menu } from '@core/services/menu.service';
 
@@ -20,6 +21,7 @@ export class SidebarNavComponent implements OnInit {
         public menuSrv: MenuService,
         public settings: SettingsService,
         private router: Router,
+        private http: _HttpClient,
         el: ElementRef,
         private render: Renderer2,
         @Inject(DOCUMENT) private doc: Document) {
@@ -27,6 +29,14 @@ export class SidebarNavComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.http.get('/uaa/userinfo')
+            .subscribe((data: any) => {
+                console.log(data);
+                // this.menuSrv.add();
+            }, (err: any) => {
+                console.log(err);
+            });
+
         this.menuSrv.setDefault(this.router.url);
         this.genFloatingContainer();
     }
