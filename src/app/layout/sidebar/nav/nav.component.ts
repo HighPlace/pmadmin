@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 import {_HttpClient} from '@core/services/http.client';
 import { SettingsService } from '@core/services/settings.service';
+import {ACLService} from '@core/acl/acl.service';
 import { MenuService, Menu } from '@core/services/menu.service';
 
 const SHOWCLS = 'nav-floating-show';
@@ -20,6 +21,7 @@ export class SidebarNavComponent implements OnInit {
     constructor(
         public menuSrv: MenuService,
         public settings: SettingsService,
+        private aclService: ACLService,
         private router: Router,
         private http: _HttpClient,
         el: ElementRef,
@@ -32,7 +34,22 @@ export class SidebarNavComponent implements OnInit {
         this.http.get('/uaa/userinfo')
             .subscribe((data: any) => {
                 console.log(data);
-                // this.menuSrv.add();
+                this.settings.setUser({
+                    name: data.username,
+                    email: data.email
+                });
+                // 设置ＡＣＬ权限
+                if (data.superUserFlag) {
+                    this.aclService.setFull(true);
+                }else {
+                    const modules: number[] = [];
+                    data.modules.forEach(module => {
+                        modules.push(module.moduleId);
+                    });
+                    this.aclService.setAbility(modules);
+                }
+
+                this.menuSrv.resume();
             }, (err: any) => {
                 console.log(err);
             });

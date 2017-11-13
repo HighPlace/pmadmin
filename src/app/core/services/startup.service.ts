@@ -33,9 +33,9 @@ export class StartupService {
             this.httpClient.get('assets/app-data.json')
                 .subscribe((res: any) => {
                     this.settingService.setApp(res.app);
-                    this.settingService.setUser(res.user);
+                    // this.settingService.setUser(res.user);
                     // 设置ＡＣＬ权限为全量
-                    this.aclService.setFull(true);
+                    // this.aclService.setFull(true);
                     // 初始化菜单
                     this.menuService.add(res.menu);
                     // 调整语言

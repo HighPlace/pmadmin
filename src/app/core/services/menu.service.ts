@@ -92,7 +92,10 @@ export class MenuService {
                 }
             }
 
-            item.hide = item.acl && !this.aclService.can(item.acl);
+            item.hide = item.module && !this.aclService.can(<ACLType>{
+                role: [item.acl],
+                ability: [item.module]
+            });
             item._type = item.externalLink ? 2 : 1;
             if (item.children && item.children.length > 0) {
                 item._type = 3;

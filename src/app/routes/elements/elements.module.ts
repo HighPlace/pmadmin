@@ -20,6 +20,7 @@ import { DemoSortableComponent } from './sortable/sortable.component';
 import { SweetAlertComponent } from './sweetalert/sweetalert.component';
 
 const routes: Routes = [
+    // { path: '', component: ButtonsComponent },
     { path: 'buttons', component: ButtonsComponent },
     { path: 'notification', component: NotificationComponent },
     { path: 'modal', component: ModalComponent },
