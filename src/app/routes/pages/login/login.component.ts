@@ -75,7 +75,7 @@ export class LoginComponent {
                 client_id: 'browser'
             }).subscribe((data: any) => {
                 console.log(data);
-                this.router.navigate(['dashboard']);
+                this.router.navigate(['']);
             }, (err: any) => {
                 console.log(err);
             });

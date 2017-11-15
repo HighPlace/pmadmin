@@ -45,7 +45,7 @@
                 },
                 {
                     "text": "员工档案管理",
-                    "link": "/forms/extended",
+                    "link": "/forms/validation",
                     "translate": "员工档案管理"
                 }
             ]
@@ -60,16 +60,16 @@
             "children": [
                 {
                     "text": "收费科目管理",
-                    "link": "/charts/g2"
+                    "link": "/forms/cropper"
                 },
                 {
                     "text": "账单类型管理",
-                    "link": "/charts/ngxcharts",
+                    "link": "/forms/upload",
                     "translate": "账单类型管理"
                 },
                 {
                     "text": "费用出账",
-                    "link": "/charts/chartjs",
+                    "link": "/forms/extended",
                     "translate": "费用出账"
                 },
                 {

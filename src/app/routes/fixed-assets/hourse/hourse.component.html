@@ -1,0 +1,107 @@
+<div class="content__title">
+    <h1>
+        房产档案管理
+        <!--<small>A complete set of notification posibilities</small>-->
+    </h1>
+    <!--<nz-breadcrumb>-->
+        <!--<nz-breadcrumb-item>-->
+            <!--<a [routerLink]="['/dashboard']">Dashboard</a>-->
+        <!--</nz-breadcrumb-item>-->
+        <!--<nz-breadcrumb-item>-->
+            <!--<a [routerLink]="['/elements/buttons']">Buttons</a>-->
+        <!--</nz-breadcrumb-item>-->
+        <!--<nz-breadcrumb-item>-->
+            <!--Notifications-->
+        <!--</nz-breadcrumb-item>-->
+    <!--</nz-breadcrumb>-->
+</div>
+
+<nz-card>
+    <ng-template #body>
+        <form nz-form>
+            <div nz-row nz-form-item [nzGutter]="0" class="mb0">
+                <div nz-form-label nz-col [nzSm]="1">
+                    <label>分区</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="3">
+                    <nz-select
+                        nzAllowClear
+                        [nzPlaceHolder]="'选择分区'"
+                        [(ngModel)]="filter.zone"
+                        [nzShowSearch]="true"
+                        name="filter.zone">
+                        <nz-option
+                            *ngFor="let option of options"
+                            [nzLabel]="option.label"
+                            [nzValue]="option.value"
+                            [nzDisabled]="option.disabled">
+                        </nz-option>
+                    </nz-select>
+                </div>
+                <div nz-form-label nz-col [nzSm]="1">
+                    <label>楼宇</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="3">
+                    <nz-select
+                        nzAllowClear
+                        [nzPlaceHolder]="'选择楼宇'"
+                        [(ngModel)]="filter.building"
+                        [nzShowSearch]="true"
+                        name="filter.building">
+                        <nz-option
+                            *ngFor="let option of options"
+                            [nzLabel]="option.label"
+                            [nzValue]="option.value"
+                            [nzDisabled]="option.disabled">
+                        </nz-option>
+                    </nz-select>
+                </div>
+                <div nz-form-label nz-col [nzSm]="1">
+                    <label>单元</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="3">
+                    <nz-select
+                        nzAllowClear
+                        [nzPlaceHolder]="'选择单元'"
+                        [(ngModel)]="selectedOption"
+                        [nzShowSearch]="true"
+                        (nzSearchChange)="onchange"
+                        name="zoneselect">
+                        <nz-option
+                            *ngFor="let option of searchOptions"
+                            [nzLabel]="option.label"
+                            [nzValue]="option.value"
+                            [nzDisabled]="option.disabled">
+                        </nz-option>
+                    </nz-select>
+                </div>
+
+                <div nz-form-label nz-col [nzSm]="1">
+                    <label>房号</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="2">
+                    <nz-input [(ngModel)]="selectedOption" name="room" [nzId]="'room'"></nz-input>
+                </div>
+                <div nz-form-label nz-col [nzSm]="2">
+                    <label>房屋状态</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="3">
+                    <nz-dropdown>
+                        <a class="ant-dropdown-link" nz-dropdown>
+                            {{args.gender ? args.gender : '所有'}} <i class="anticon anticon-down"></i>
+                        </a>
+                        <ul nz-menu>
+                            <li nz-menu-item (click)="args.gender=''">所有</li>
+                            <li nz-menu-item (click)="args.gender='male'">male</li>
+                            <li nz-menu-item (click)="args.gender='female'">female</li>
+                        </ul>
+                    </nz-dropdown>
+                </div>
+                <div nz-col [nzSm]="4" [nzOffset]="0">
+                    <button nz-button [nzType]="'primary'" (click)="load(1)" [nzLoading]="loading">查询</button>
+                    <button nz-button (click)="clear()" [disabled]="loading">新增</button>
+                </div>
+            </div>
+        </form>
+    </ng-template>
+</nz-card>
