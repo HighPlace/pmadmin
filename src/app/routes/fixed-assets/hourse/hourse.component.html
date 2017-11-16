@@ -29,12 +29,12 @@
                         [nzPlaceHolder]="'选择分区'"
                         [(ngModel)]="filter.zone"
                         [nzShowSearch]="true"
+                        (ngModelChange)="setBuildings($event)"
                         name="filter.zone">
                         <nz-option
-                            *ngFor="let option of options"
-                            [nzLabel]="option.label"
-                            [nzValue]="option.value"
-                            [nzDisabled]="option.disabled">
+                            *ngFor="let option of zones"
+                            [nzLabel]="option.zoneId"
+                            [nzValue]="option.zoneId">
                         </nz-option>
                     </nz-select>
                 </div>
@@ -47,12 +47,12 @@
                         [nzPlaceHolder]="'选择楼宇'"
                         [(ngModel)]="filter.building"
                         [nzShowSearch]="true"
+                        (ngModelChange)="setUnits($event)"
                         name="filter.building">
                         <nz-option
-                            *ngFor="let option of options"
-                            [nzLabel]="option.label"
-                            [nzValue]="option.value"
-                            [nzDisabled]="option.disabled">
+                            *ngFor="let option of buildings"
+                            [nzLabel]="option.buildingId"
+                            [nzValue]="option.buildingId">
                         </nz-option>
                     </nz-select>
                 </div>
@@ -63,15 +63,13 @@
                     <nz-select
                         nzAllowClear
                         [nzPlaceHolder]="'选择单元'"
-                        [(ngModel)]="selectedOption"
+                        [(ngModel)]="filter.unit"
                         [nzShowSearch]="true"
-                        (nzSearchChange)="onchange"
-                        name="zoneselect">
+                        name="filter.unit">
                         <nz-option
-                            *ngFor="let option of searchOptions"
-                            [nzLabel]="option.label"
-                            [nzValue]="option.value"
-                            [nzDisabled]="option.disabled">
+                            *ngFor="let option of units"
+                            [nzLabel]="option"
+                            [nzValue]="option">
                         </nz-option>
                     </nz-select>
                 </div>
@@ -80,7 +78,7 @@
                     <label>房号</label>
                 </div>
                 <div nz-form-control nz-col [nzSm]="2">
-                    <nz-input [(ngModel)]="selectedOption" name="room" [nzId]="'room'"></nz-input>
+                    <nz-input [(ngModel)]="filter.room" name="filter.room"></nz-input>
                 </div>
                 <div nz-form-label nz-col [nzSm]="2">
                     <label>房屋状态</label>
@@ -88,20 +86,82 @@
                 <div nz-form-control nz-col [nzSm]="3">
                     <nz-dropdown>
                         <a class="ant-dropdown-link" nz-dropdown>
-                            {{args.gender ? args.gender : '所有'}} <i class="anticon anticon-down"></i>
+                            {{filter.status | roomStatus}} <i class="anticon anticon-down"></i>
                         </a>
                         <ul nz-menu>
-                            <li nz-menu-item (click)="args.gender=''">所有</li>
-                            <li nz-menu-item (click)="args.gender='male'">male</li>
-                            <li nz-menu-item (click)="args.gender='female'">female</li>
+                            <li
+                                nz-menu-item
+                                *ngFor="let status of roomStatusList"
+                                (click)="filter.status=status.value">{{status.label}}</li>
                         </ul>
                     </nz-dropdown>
                 </div>
                 <div nz-col [nzSm]="4" [nzOffset]="0">
-                    <button nz-button [nzType]="'primary'" (click)="load(1)" [nzLoading]="loading">查询</button>
-                    <button nz-button (click)="clear()" [disabled]="loading">新增</button>
+                    <button nz-button [nzType]="'primary'" (click)="load(true)" [nzLoading]="loading">查询</button>
+                    <button nz-button (click)="add()" [disabled]="loading">新增</button>
                 </div>
             </div>
         </form>
     </ng-template>
 </nz-card>
+
+<div nz-row [nzGutter]="16">
+    <div nz-col [nzMd]="24">
+        <nz-card>
+            <ng-template #body>
+                <!--<div class="mb-sm text-right">-->
+                    <!--<nz-dropdown>-->
+                        <!--<button nz-button nz-dropdown>-->
+                            <!--<span>Export</span> <i class="anticon anticon-down"></i>-->
+                        <!--</button>-->
+                        <!--<ul nz-menu>-->
+                            <!--<li nz-menu-item>Excel</li>-->
+                            <!--<li nz-menu-item>JSON</li>-->
+                            <!--<li nz-menu-item>PNG</li>-->
+                        <!--</ul>-->
+                    <!--</nz-dropdown>-->
+                <!--</div>-->
+                <nz-table #nzTable
+                          [nzAjaxData]="list"
+                          [nzShowSizeChanger]="true"
+                          [nzLoading]="loading"
+                          [nzTotal]="total"
+                          [(nzPageIndex)]="pageIndex"
+                          (nzPageIndexChange)="load()"
+                          [(nzPageSize)]="pageSize"
+                          (nzPageSizeChange)="load(true)">
+                    <thead nz-thead>
+                    <tr>
+                        <th nz-th><span>分区</span></th>
+                        <th nz-th><span>楼宇</span></th>
+                        <th nz-th><span>单元</span></th>
+                        <th nz-th><span>房号</span></th>
+                        <th nz-th><span>套内／产权面积</span></th>
+                        <th nz-th><span>房屋状态</span></th>
+                        <th nz-th><span>操作</span></th>
+                    </tr>
+                    </thead>
+                    <tbody nz-tbody>
+                    <tr nz-tbody-tr *ngFor="let data of nzTable.data">
+                        <td nz-td>{{data.zoneId}}</td>
+                        <td nz-td>{{data.buildingId}}</td>
+                        <td nz-td>{{data.unitId}}</td>
+                        <td nz-td>{{data.roomId}}</td>
+                        <td nz-td>{{data.floorArea | numFormat}}/{{data.propertyArea | numFormat}}</td>
+                        <td nz-td>{{data.status | roomStatus}}</td>
+                        <td nz-td>
+                            <a (click)="openDetail(data)">详情</a>
+                            <span nz-table-divider></span>
+                            <nz-popconfirm [nzTitle]="'确定要删除吗？'" [nzOkText]="'删除'" [nzCancelText]="'取消'" (nzOnConfirm)="delete(data)">
+                                <a nz-popconfirm>删除</a>
+                            </nz-popconfirm>
+                            <span nz-table-divider></span>
+                            <a (click)="openDetail(data, true)">编辑</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </nz-table>
+            </ng-template>
+        </nz-card>
+    </div>
+</div>
