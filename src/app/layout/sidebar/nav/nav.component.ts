@@ -33,11 +33,8 @@ export class SidebarNavComponent implements OnInit {
     ngOnInit() {
         this.http.get('/uaa/userinfo')
             .subscribe((data: any) => {
-                console.log(data);
-                this.settings.setUser({
-                    name: data.username,
-                    email: data.email
-                });
+                // console.log(data);
+                this.settings.setUser(data);
                 // 设置ＡＣＬ权限
                 if (data.superUserFlag) {
                     this.aclService.setFull(true);

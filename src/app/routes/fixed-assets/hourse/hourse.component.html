@@ -91,7 +91,7 @@
                         <ul nz-menu>
                             <li
                                 nz-menu-item
-                                *ngFor="let status of roomStatusList"
+                                *ngFor="let status of filterStatusList"
                                 (click)="filter.status=status.value">{{status.label}}</li>
                         </ul>
                     </nz-dropdown>
@@ -165,3 +165,124 @@
         </nz-card>
     </div>
 </div>
+
+<nz-modal [nzVisible]="isVisible" [nzTitle]="'房产档案'" [nzContent]="modalContent" (nzOnCancel)="handleCancel($event)" (nzOnOk)="handleOk($event)" [nzConfirmLoading]="isConfirmLoading">
+    <ng-template #modalContent>
+        <form nz-form [formGroup]="valForm" (ngSubmit)="submit()" role="form">
+            <div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>区域</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('zoneId')">
+                    <nz-input formControlName="zoneId" [nzPlaceHolder]="'区域'" [nzSize]="'large'">
+                    </nz-input>
+                </div>
+            </div>
+            <div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label nz-form-item-required>楼号</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('buildingId')">
+                    <nz-input formControlName="buildingId" [nzPlaceHolder]="'楼号'" [nzSize]="'large'">
+                    </nz-input>
+                    <div nz-form-explain *ngIf="getFormControl('buildingId').dirty&&getFormControl('buildingId').hasError('required')">楼号必填</div>
+                </div>
+            </div>
+            <div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label nz-form-item-required>单元</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('unitId')">
+                    <nz-input formControlName="unitId" [nzPlaceHolder]="'单元'" [nzSize]="'large'">
+                    </nz-input>
+                    <div nz-form-explain *ngIf="getFormControl('unitId').dirty&&getFormControl('unitId').hasError('required')">单元必填</div>
+                </div>
+            </div>
+            <div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label nz-form-item-required>房号</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('roomId')">
+                    <nz-input formControlName="roomId" [nzPlaceHolder]="'房号'" [nzSize]="'large'">
+                    </nz-input>
+                    <div nz-form-explain *ngIf="getFormControl('roomId').dirty&&getFormControl('roomId').hasError('required')">房号必填</div>
+                </div>
+            </div>
+            <div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>户型</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('houseType')">
+                    <nz-input formControlName="houseType" [nzPlaceHolder]="'户型'" [nzSize]="'large'">
+                    </nz-input>
+                </div>
+            </div>
+            <div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label nz-form-item-required>房产类型</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('propertyType')">
+                    <nz-select
+                        [nzPlaceHolder]="'房产类型'"
+                        formControlName="propertyType">
+                        <nz-option
+                            *ngFor="let option of propertyTypeList"
+                            [nzLabel]="option.label"
+                            [nzValue]="option.value">
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+            <div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>产权面积</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('propertyArea')">
+                    <nz-input formControlName="propertyArea" [nzPlaceHolder]="'产权面积'" [nzSize]="'large'">
+                    </nz-input>
+                </div>
+            </div>
+            <div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>套内面积</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('floorArea')">
+                    <nz-input formControlName="floorArea" [nzPlaceHolder]="'套内面积'" [nzSize]="'large'">
+                    </nz-input>
+                </div>
+            </div>
+            <div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label nz-form-item-required>面积单位</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('areaUnit')">
+                    <nz-select
+                        [nzPlaceHolder]="'面积单位'"
+                        formControlName="areaUnit">
+                        <nz-option
+                            *ngFor="let option of areaUnitList"
+                            [nzLabel]="option.label"
+                            [nzValue]="option.value">
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+            <div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label nz-form-item-required>房产状态</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('status')">
+                    <nz-select
+                        [nzPlaceHolder]="'房产状态'"
+                        formControlName="status">
+                        <nz-option
+                            *ngFor="let option of statusList"
+                            [nzLabel]="option.label"
+                            [nzValue]="option.value">
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+        </form>
+    </ng-template>
+</nz-modal>

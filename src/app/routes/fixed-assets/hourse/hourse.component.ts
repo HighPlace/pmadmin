@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
+import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import {_HttpClient} from '@core/services/http.client';
-import { statusList } from './model';
+import { SettingsService } from '@core/services/settings.service';
+import { statusList, propertyTypeList, areaUnitList, Hourse } from './data-model';
 
 @Component({
     selector: 'app-hourse',
@@ -10,7 +12,10 @@ export class HourseComponent implements OnInit {
     zones: any[] = [];
     buildings: any[] = [];
     units: string[] = [];
-    roomStatusList: any[] = statusList;
+    filterStatusList: any[] = [];
+    statusList: any[] = [];
+    propertyTypeList: any[] = [];
+    areaUnitList: any[] = [];
     filter: any = {
         zone: '',
         building: '',
@@ -19,13 +24,40 @@ export class HourseComponent implements OnInit {
         status: -1
     };
 
-    list = [];
+    list: Hourse[] = [];
     loading = false;
     total = 0;
     pageIndex = 1;
     pageSize = 10;
 
-    constructor(private http: _HttpClient) {
+    valForm: FormGroup;
+    isVisible = true;
+
+    constructor(private http: _HttpClient,
+                private setting: SettingsService,
+                fb: FormBuilder) {
+        this.filterStatusList = statusList;
+        this.filterStatusList.push({
+            value: -1,
+            label: '全部'
+        });
+        this.statusList = statusList;
+        this.propertyTypeList = propertyTypeList;
+        this.areaUnitList = areaUnitList;
+
+        this.valForm = fb.group({
+            zoneId: [null, null],
+            buildingId: [null, Validators.required],
+            unitId: [null, Validators.required],
+            roomId: [null, Validators.required],
+            houseType: [null, null],
+            propertyType: [0, Validators.required],
+            propertyArea: [null, null],
+            floorArea: [null, null],
+            areaUnit: [0, Validators.required],
+            status: [0, Validators.required]
+        });
+
     }
 
     ngOnInit() {
@@ -48,7 +80,7 @@ export class HourseComponent implements OnInit {
         }
         this.loading = true;
 
-        let params:any = {
+        const params: any = {
             pageNum: this.pageIndex,
             pageSize: this.pageSize
         };
@@ -96,5 +128,9 @@ export class HourseComponent implements OnInit {
 
     openDetail(data, isEdit: boolean) {
 
+    }
+
+    getFormControl(name) {
+        return this.valForm.controls[name];
     }
 }

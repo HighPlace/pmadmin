@@ -5,10 +5,27 @@ import { ThemeType } from './themes.service';
 const KEY = 'layout';
 
 export interface User {
-    name?: string;
+    name: string;
     avatar?: string;
-    email?: string;
-    [key: string]: any;
+    userId: number;
+    productInstId: string;
+    username: string;
+    mobileNo: string;
+    email: string;
+    wxOpenId: string;
+    superUserFlag: false;
+    roles: RoleDetail[];
+}
+
+export interface RoleDetail {
+    roleId: number;
+    productInstId: string;
+    roleName: string;
+    createTime: number;
+    modifyTime: number;
+    superRoleFlag: boolean;
+    remark: string;
+    actions: string;
 }
 
 export interface App {
@@ -39,7 +56,7 @@ export class SettingsService {
         year: (new Date()).getFullYear()
     };
 
-    user: User = {};
+    user: User = <User>{};
 
     private _layout: Layout = null;
 
