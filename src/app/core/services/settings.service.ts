@@ -5,11 +5,10 @@ import { ThemeType } from './themes.service';
 const KEY = 'layout';
 
 export interface User {
-    name: string;
+    username: string;
     avatar?: string;
     userId: number;
     productInstId: string;
-    username: string;
     mobileNo: string;
     email: string;
     wxOpenId: string;

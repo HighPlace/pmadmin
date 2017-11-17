@@ -44,7 +44,7 @@ export class Hourse {
     floorArea = 0;
     houseType = '';
     status = 0;
-    createTime = 0;
-    modifyTime = 0;
+    createTime = Date.now();
+    modifyTime = Date.now();
     remark = '';
 }

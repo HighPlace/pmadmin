@@ -31,7 +31,10 @@ export class HourseComponent implements OnInit {
     pageSize = 10;
 
     valForm: FormGroup;
-    isVisible = true;
+    isVisible = false;
+    isConfirmLoading = false;
+    maskClosable = false;
+    dialogStatus = 'view'; // edit add
 
     constructor(private http: _HttpClient,
                 private setting: SettingsService,
@@ -126,8 +129,32 @@ export class HourseComponent implements OnInit {
         }
     }
 
-    openDetail(data, isEdit: boolean) {
+    openDetail(data: Hourse, isEdit: boolean) {
+        let _data: Hourse = new Hourse();
 
+        if (isEdit) {
+            this.dialogStatus = 'edit';
+            this.maskClosable = false;
+            _data = Object.assign({}, data);
+        }else if (data.propertyId) {
+            this.dialogStatus = 'view';
+            this.maskClosable = true;
+        }else {
+            this.dialogStatus = 'add';
+            this.maskClosable = false;
+            _data = Object.assign({}, data);
+        }
+
+        this.valForm.reset(_data);
+        this.isVisible = true;
+    }
+
+    handleOk(e) {
+        this.isVisible = false;
+    }
+
+    handleCancel(e) {
+        this.isVisible = false;
     }
 
     getFormControl(name) {

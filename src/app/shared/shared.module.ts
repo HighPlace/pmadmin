@@ -14,10 +14,11 @@ import { MomentDatePipe } from './pipes/moment-date.pipe';
 import { CNCurrencyPipe } from './pipes/cn-currency.pipe';
 import { KeysPipe } from './pipes/keys.pipe';
 import { YNPipe } from './pipes/yn.pipe';
+import { DataOperPipe } from '@shared/pipes/data-oper.pipe';
 import { ModalHelper } from './helper/modal.helper';
 
 const DIRECTIVES = [SparklineDirective, DownFileDirective];
-const PIPES = [MomentDatePipe, CNCurrencyPipe, KeysPipe, YNPipe];
+const PIPES = [MomentDatePipe, CNCurrencyPipe, KeysPipe, YNPipe, DataOperPipe];
 const HELPERS = [ ModalHelper ];
 
 @NgModule({

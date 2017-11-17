@@ -39,6 +39,7 @@ export class SidebarNavComponent implements OnInit {
                 if (data.superUserFlag) {
                     this.aclService.setFull(true);
                 }else {
+                    this.aclService.setFull(false);
                     const modules: number[] = [];
                     data.modules.forEach(module => {
                         modules.push(module.moduleId);
