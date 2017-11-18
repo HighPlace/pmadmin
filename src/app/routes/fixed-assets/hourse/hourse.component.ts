@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
+import {NzMessageService, NzNotificationService, NzModalService} from 'ng-zorro-antd';
 import {_HttpClient} from '@core/services/http.client';
-import { SettingsService } from '@core/services/settings.service';
-import { statusList, propertyTypeList, areaUnitList, Hourse } from './data-model';
+import {SettingsService} from '@core/services/settings.service';
+import {statusList, propertyTypeList, areaUnitList, Hourse} from './data-model';
 
 @Component({
     selector: 'app-hourse',
@@ -35,12 +36,14 @@ export class HourseComponent implements OnInit {
     isConfirmLoading = false;
     maskClosable = false;
     dialogStatus = 'view'; // edit add
+    curHourse = new Hourse();
 
     constructor(private http: _HttpClient,
+                private msg: NzMessageService,
                 private setting: SettingsService,
                 fb: FormBuilder) {
         this.filterStatusList = statusList;
-        this.filterStatusList.push({
+        this.filterStatusList.unshift({
             value: -1,
             label: '全部'
         });
@@ -73,6 +76,7 @@ export class HourseComponent implements OnInit {
             .subscribe((data: any) => {
                 this.zones = data.zoneIdList || [];
             }, (err: any) => {
+                this.showErr();
                 console.log(err);
             });
     }
@@ -130,34 +134,82 @@ export class HourseComponent implements OnInit {
     }
 
     openDetail(data: Hourse, isEdit: boolean) {
-        let _data: Hourse = new Hourse();
+        this.curHourse = new Hourse();
 
         if (isEdit) {
             this.dialogStatus = 'edit';
             this.maskClosable = false;
-            _data = Object.assign({}, data);
-        }else if (data.propertyId) {
+            this.curHourse = Object.assign({}, data);
+        } else if (data.propertyId) {
             this.dialogStatus = 'view';
             this.maskClosable = true;
-        }else {
+            this.curHourse = Object.assign({}, data);
+        } else {
             this.dialogStatus = 'add';
             this.maskClosable = false;
-            _data = Object.assign({}, data);
         }
 
-        this.valForm.reset(_data);
+        this.valForm.reset(this.curHourse);
         this.isVisible = true;
     }
 
     handleOk(e) {
-        this.isVisible = false;
+        this.isConfirmLoading = true;
+
+        if (this.dialogStatus === 'add') {
+            this.http.post('/pm/property', this.valForm.value)
+                .subscribe((data: any) => {
+                    this.isConfirmLoading = false;
+                    this.isVisible = false;
+                    this.load();
+                }, (err: any) => {
+                    this.isConfirmLoading = false;
+                    this.showErr();
+                    console.log(err);
+                });
+        } else if (this.dialogStatus === 'edit') {
+            this.http.put('/pm/property', Object.assign({}, this.valForm.value, {propertyId: this.curHourse.propertyId}))
+                .subscribe((data: any) => {
+                    this.isConfirmLoading = false;
+                    this.isVisible = false;
+                    this.load();
+                }, (err: any) => {
+                    this.isConfirmLoading = false;
+                    this.showErr();
+                    console.log(err);
+                });
+        }
     }
 
     handleCancel(e) {
         this.isVisible = false;
     }
 
+    deleteData(hourse: Hourse) {
+        this.http.delete('/pm/property', {propertyId: hourse.propertyId})
+            .subscribe((data: any) => {
+                this.load();
+            }, (err: any) => {
+                if (err.status !== 200) {
+                    this.showErr();
+                } else {
+                    this.load();
+                }
+                console.log(err);
+            });
+    }
+
     getFormControl(name) {
         return this.valForm.controls[name];
+    }
+
+    showErr() {
+        this.msg.create(
+            'error',
+            '请求失败，请稍后重试，或联系管理员！',
+            {
+                nzDuration: 3 * 1000
+            }
+        );
     }
 }

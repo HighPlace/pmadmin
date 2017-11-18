@@ -35,11 +35,14 @@ export class TokenInterceptor implements HttpInterceptor {
                 return Observable.create(observer => observer.error({ status: 401 }));
             }
             // 正常token值放在请求header当中，具体格式以后端为准
-            header = req.headers.set('Authorization', `Bearer ${authData.access_token}`);
+            header = req.headers.append('Authorization', `Bearer ${authData.access_token}`);
         }
 
+        // 登陆接口特殊处理，并且content-type不能为application／json
         if (req.url.includes('/oauth/token')) {
-            header = req.headers.set('Authorization', 'Basic YnJvd3Nlcjo=');
+            header = req.headers.append('Authorization', 'Basic YnJvd3Nlcjo=');
+        }else if (req.method === 'POST' || req.method === 'PUT' || req.method === 'DELETE') {
+            header = header.append('Content-Type', 'application/json');
         }
 
         // 统一加上服务端前缀

@@ -154,7 +154,7 @@
                             <a (click)="openDetail(data)">详情</a>
                             <span nz-table-divider></span>
                             <nz-popconfirm [nzTitle]="'确定要删除吗？'" [nzOkText]="'删除'" [nzCancelText]="'取消'"
-                                           (nzOnConfirm)="delete(data)">
+                                           (nzOnConfirm)="deleteData(data)">
                                 <a nz-popconfirm>删除</a>
                             </nz-popconfirm>
                             <span nz-table-divider></span>
@@ -183,7 +183,7 @@
                     <label>区域</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('zoneId')">
-                    <nz-input formControlName="zoneId" [nzPlaceHolder]="'区域'" [nzSize]="'large'">
+                    <nz-input formControlName="zoneId" [nzPlaceHolder]="'区域'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
                     </nz-input>
                 </div>
             </div>
@@ -192,7 +192,7 @@
                     <label nz-form-item-required>楼号</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('buildingId')">
-                    <nz-input formControlName="buildingId" [nzPlaceHolder]="'楼号'" [nzSize]="'large'">
+                    <nz-input formControlName="buildingId" [nzPlaceHolder]="'楼号'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
                     </nz-input>
                     <div nz-form-explain
                          *ngIf="getFormControl('buildingId').dirty&&getFormControl('buildingId').hasError('required')">
@@ -205,7 +205,7 @@
                     <label nz-form-item-required>单元</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('unitId')">
-                    <nz-input formControlName="unitId" [nzPlaceHolder]="'单元'" [nzSize]="'large'">
+                    <nz-input formControlName="unitId" [nzPlaceHolder]="'单元'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
                     </nz-input>
                     <div nz-form-explain
                          *ngIf="getFormControl('unitId').dirty&&getFormControl('unitId').hasError('required')">单元必填
@@ -217,7 +217,7 @@
                     <label nz-form-item-required>房号</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('roomId')">
-                    <nz-input formControlName="roomId" [nzPlaceHolder]="'房号'" [nzSize]="'large'">
+                    <nz-input formControlName="roomId" [nzPlaceHolder]="'房号'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
                     </nz-input>
                     <div nz-form-explain
                          *ngIf="getFormControl('roomId').dirty&&getFormControl('roomId').hasError('required')">房号必填
@@ -229,7 +229,7 @@
                     <label>户型</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('houseType')">
-                    <nz-input formControlName="houseType" [nzPlaceHolder]="'户型'" [nzSize]="'large'">
+                    <nz-input formControlName="houseType" [nzPlaceHolder]="'户型'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
                     </nz-input>
                 </div>
             </div>
@@ -240,7 +240,8 @@
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('propertyType')">
                     <nz-select
                         [nzPlaceHolder]="'房产类型'"
-                        formControlName="propertyType">
+                        formControlName="propertyType"
+                        [nzDisabled]="dialogStatus === 'view'">
                         <nz-option
                             *ngFor="let option of propertyTypeList"
                             [nzLabel]="option.label"
@@ -254,7 +255,7 @@
                     <label>产权面积</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('propertyArea')">
-                    <nz-input formControlName="propertyArea" [nzPlaceHolder]="'产权面积'" [nzSize]="'large'">
+                    <nz-input formControlName="propertyArea" [nzPlaceHolder]="'产权面积'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
                     </nz-input>
                 </div>
             </div>
@@ -263,7 +264,7 @@
                     <label>套内面积</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('floorArea')">
-                    <nz-input formControlName="floorArea" [nzPlaceHolder]="'套内面积'" [nzSize]="'large'">
+                    <nz-input formControlName="floorArea" [nzPlaceHolder]="'套内面积'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
                     </nz-input>
                 </div>
             </div>
@@ -274,7 +275,8 @@
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('areaUnit')">
                     <nz-select
                         [nzPlaceHolder]="'面积单位'"
-                        formControlName="areaUnit">
+                        formControlName="areaUnit"
+                        [nzDisabled]="dialogStatus === 'view'">
                         <nz-option
                             *ngFor="let option of areaUnitList"
                             [nzLabel]="option.label"
@@ -290,7 +292,8 @@
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('status')">
                     <nz-select
                         [nzPlaceHolder]="'房产状态'"
-                        formControlName="status">
+                        formControlName="status"
+                        [nzDisabled]="dialogStatus === 'view'">
                         <nz-option
                             *ngFor="let option of statusList"
                             [nzLabel]="option.label"

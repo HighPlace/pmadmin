@@ -92,7 +92,11 @@ export class _HttpClient {
      */
     post(url: string, body?: any, params?: any): Observable<any> {
         url = this.fullCgiPath(url);
-        body = this.parseParams(body);
+
+        // 登陆接口特殊处理
+        if (url.includes('/oauth/token')) {
+            body = this.parseParams(body);
+        }
 
         this.begin();
         return this.http
@@ -102,7 +106,33 @@ export class _HttpClient {
             .do(() => this.end())
             .catch((res) => {
                 this.end();
-                return res;
+                return new Observable((observer) => {
+                    observer.error(res);
+                });
+            });
+    }
+
+    /**
+     * PUT请求
+     *
+     * @param {string} url URL地址
+     * @param {*} [body] body内容
+     * @param {*} [params] 请求参数
+     */
+    put(url: string, body?: any, params?: any): Observable<any> {
+        url = this.fullCgiPath(url);
+
+        this.begin();
+        return this.http
+            .put(url, body || null, {
+                params: this.parseParams(params),
+            })
+            .do(() => this.end())
+            .catch((res) => {
+                this.end();
+                return new Observable((observer) => {
+                    observer.error(res);
+                });
             });
     }
 
@@ -122,7 +152,9 @@ export class _HttpClient {
             .do(() => this.end())
             .catch((res) => {
                 this.end();
-                return res;
+                return new Observable((observer) => {
+                    observer.error(res);
+                });
             });
     }
 }
