@@ -56,7 +56,7 @@ export class _HttpClient {
 
     fullCgiPath(url: string): string {
         if (!url.startsWith('https://') && !url.startsWith('http://')) {
-            url = 'https://host/api' + url;
+            url = 'https://www.bellostanza.com/api' + url;
         }
         return url;
     }
@@ -77,6 +77,7 @@ export class _HttpClient {
             .do(() => this.end())
             .catch((res) => {
                 this.end();
+                console.log('!!!!!!http get catch');
                 return new Observable((observer) => {
                     observer.error(res);
                 });
@@ -106,9 +107,7 @@ export class _HttpClient {
             .do(() => this.end())
             .catch((res) => {
                 this.end();
-                return new Observable((observer) => {
-                    observer.error(res);
-                });
+                return res;
             });
     }
 
@@ -130,9 +129,7 @@ export class _HttpClient {
             .do(() => this.end())
             .catch((res) => {
                 this.end();
-                return new Observable((observer) => {
-                    observer.error(res);
-                });
+                return res;
             });
     }
 
@@ -152,9 +149,7 @@ export class _HttpClient {
             .do(() => this.end())
             .catch((res) => {
                 this.end();
-                return new Observable((observer) => {
-                    observer.error(res);
-                });
+                return res;
             });
     }
 }

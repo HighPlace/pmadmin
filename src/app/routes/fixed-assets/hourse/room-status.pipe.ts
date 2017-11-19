@@ -6,11 +6,17 @@ import { statusList } from './data-model';
 export class RoomStatusPipe implements PipeTransform {
     transform(value: number): string {
         let label = '未知';
-        statusList.forEach(e => {
-            if (e.value === value ) {
-                label = e.label;
-            }
-        });
+
+        if (value === -1) {
+            label = '全部';
+        }else {
+            statusList.forEach(e => {
+                if (e.value === value ) {
+                    label = e.label;
+                }
+            });
+        }
+
         return label;
     }
 }

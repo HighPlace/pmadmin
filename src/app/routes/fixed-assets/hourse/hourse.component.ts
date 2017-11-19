@@ -42,11 +42,7 @@ export class HourseComponent implements OnInit {
                 private msg: NzMessageService,
                 private setting: SettingsService,
                 fb: FormBuilder) {
-        this.filterStatusList = statusList;
-        this.filterStatusList.unshift({
-            value: -1,
-            label: '全部'
-        });
+        this.filterStatusList = [{value: -1, label: '全部'}].concat(statusList);
         this.statusList = statusList;
         this.propertyTypeList = propertyTypeList;
         this.areaUnitList = areaUnitList;
@@ -112,6 +108,9 @@ export class HourseComponent implements OnInit {
             this.loading = false;
             this.total = data.totalCount || 0;
             this.list = data.data || [];
+        }, (err: any) => {
+            this.showErr();
+            console.log(err);
         });
     }
 

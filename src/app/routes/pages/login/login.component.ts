@@ -11,7 +11,7 @@ import {SettingsService} from '@core/services/settings.service';
 })
 export class LoginComponent {
     valForm: FormGroup;
-    verifyUrl = 'https://host/api/uaa/captcha-image';
+    verifyUrl = 'https://www.bellostanza.com/api/uaa/captcha-image';
     imgSrc = '';
     vcInt = 0;
 
