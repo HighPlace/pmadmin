@@ -1,0 +1,445 @@
+<div class="content__title">
+    <h1>
+        服务工单管理
+        <!--<small>A complete set of notification posibilities</small>-->
+    </h1>
+    <!--<nz-breadcrumb>-->
+    <!--<nz-breadcrumb-item>-->
+    <!--<a [routerLink]="['/dashboard']">Dashboard</a>-->
+    <!--</nz-breadcrumb-item>-->
+    <!--<nz-breadcrumb-item>-->
+    <!--<a [routerLink]="['/elements/buttons']">Buttons</a>-->
+    <!--</nz-breadcrumb-item>-->
+    <!--<nz-breadcrumb-item>-->
+    <!--Notifications-->
+    <!--</nz-breadcrumb-item>-->
+    <!--</nz-breadcrumb>-->
+</div>
+
+<nz-card>
+    <ng-template #body>
+        <form nz-form>
+            <div nz-row nz-form-item [nzGutter]="0" class="mb0">
+
+                <div nz-form-label nz-col [nzSm]="2">
+                    <label>服务大类</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="3">
+                    <nz-dropdown>
+                        <a class="ant-dropdown-link" nz-dropdown>
+                            {{filter.type | type}} <i class="anticon anticon-down"></i>
+                        </a>
+                        <ul nz-menu>
+                            <li
+                                nz-menu-item
+                                *ngFor="let type of filterTypeList"
+                                (click)="filter.type=type.value">{{type.label}}
+                            </li>
+                        </ul>
+                    </nz-dropdown>
+                </div>
+				<div nz-form-label nz-col [nzSm]="2">
+                    <label>服务小类</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="3">
+                    <nz-dropdown>
+                        <a class="ant-dropdown-link" nz-dropdown>
+                            {{filter.subType | subType}} <i class="anticon anticon-down"></i>
+                        </a>
+                        <ul nz-menu>
+                            <li
+                                nz-menu-item
+                                *ngFor="let subType of filterSubTypeList"
+                                (click)="filter.subType=subType.value">{{subType.label}}
+                            </li>
+                        </ul>
+                    </nz-dropdown>
+                </div>
+				<div nz-form-label nz-col [nzSm]="2">
+                    <label>服务来源</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="3">
+                    <nz-dropdown>
+                        <a class="ant-dropdown-link" nz-dropdown>
+                            {{filter.source | source}} <i class="anticon anticon-down"></i>
+                        </a>
+                        <ul nz-menu>
+                            <li
+                                nz-menu-item
+                                *ngFor="let source of filterSourceList"
+                                (click)="filter.source=source.value">{{source.label}}
+                            </li>
+                        </ul>
+                    </nz-dropdown>
+                </div>
+				<div nz-form-label nz-col [nzSm]="2">
+                    <label>服务状态</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="3">
+                    <nz-dropdown>
+                        <a class="ant-dropdown-link" nz-dropdown>
+                            {{filter.status | status}} <i class="anticon anticon-down"></i>
+                        </a>
+                        <ul nz-menu>
+                            <li
+                                nz-menu-item
+                                *ngFor="let status of filterStatusList"
+                                (click)="filter.status=status.value">{{status.label}}
+                            </li>
+                        </ul>
+                    </nz-dropdown>
+                </div>
+				<div nz-form-label nz-col [nzSm]="2">
+                    <label>服务优先级</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="3">
+                    <nz-dropdown>
+                        <a class="ant-dropdown-link" nz-dropdown>
+                            {{filter.priority | priority}} <i class="anticon anticon-down"></i>
+                        </a>
+                        <ul nz-menu>
+                            <li
+                                nz-menu-item
+                                *ngFor="let priority of filterPriorityList"
+                                (click)="filter.priority=priority.value">{{priority.label}}
+                            </li>
+                        </ul>
+                    </nz-dropdown>
+                </div>
+				<div nz-form-label nz-col [nzSm]="1">
+                    <label>发起时间</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="2">
+                    <nz-input [(ngModel)]="filter.requestDateFrom" name="filter.requestDateFrom"></nz-input>
+                </div>
+				-
+				<div nz-form-control nz-col [nzSm]="2">
+                    <nz-input [(ngModel)]="filter.requestDateTo" name="filter.requestDateTo"></nz-input>
+                </div>
+				
+                <div nz-col [nzSm]="4" [nzOffset]="0">
+                    <button nz-button [nzType]="'primary'" (click)="load(true)" [nzLoading]="loading">查询</button>
+                    <button nz-button (click)="openDetail({})" [disabled]="loading">新增</button>
+                </div>
+            </div>
+        </form>
+    </ng-template>
+</nz-card>
+
+<div nz-row [nzGutter]="16">
+    <div nz-col [nzMd]="24">
+        <nz-card>
+            <ng-template #body>
+                <!--<div class="mb-sm text-right">-->
+                <!--<nz-dropdown>-->
+                <!--<button nz-button nz-dropdown>-->
+                <!--<span>Export</span> <i class="anticon anticon-down"></i>-->
+                <!--</button>-->
+                <!--<ul nz-menu>-->
+                <!--<li nz-menu-item>Excel</li>-->
+                <!--<li nz-menu-item>JSON</li>-->
+                <!--<li nz-menu-item>PNG</li>-->
+                <!--</ul>-->
+                <!--</nz-dropdown>-->
+                <!--</div>-->
+                <nz-table #nzTable
+                          [nzAjaxData]="list"
+                          [nzShowSizeChanger]="true"
+                          [nzLoading]="loading"
+                          [nzTotal]="total"
+                          [(nzPageIndex)]="pageIndex"
+                          (nzPageIndexChange)="load()"
+                          [(nzPageSize)]="pageSize"
+                          (nzPageSizeChange)="load(true)">
+                    <thead nz-thead>
+                    <tr>
+                        <th nz-th><span>服务类型</span></th>
+                        <th nz-th><span>来源</span></th>
+                        <th nz-th><span>发起时间</span></th>
+                        <th nz-th><span>服务状态</span></th>
+                        <th nz-th><span>操作</span></th>
+                    </tr>
+                    </thead>
+                    <tbody nz-tbody>
+                    <tr nz-tbody-tr *ngFor="let data of nzTable.data">
+                        <td nz-td>{{data.type}}-{{data.subType}}</td>
+                        <td nz-td>{{data.source}}</td>
+                        <td nz-td>{{data.startTime}}</td>
+                        <td nz-td>{{data.status | statusList}}</td>
+                        <td nz-td>
+                            <a (click)="openDetail(data)">详情</a>
+                            <span nz-table-divider></span>
+                            <nz-popconfirm [nzTitle]="'确定要删除吗？'" [nzOkText]="'删除'" [nzCancelText]="'取消'"
+                                           (nzOnConfirm)="deleteData(data)">
+                                <a nz-popconfirm>删除</a>
+                            </nz-popconfirm>
+                            <span nz-table-divider></span>
+                            <a (click)="openDetail(data, true)">编辑</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </nz-table>
+            </ng-template>
+        </nz-card>
+    </div>
+</div>
+
+<nz-modal [nzVisible]="isVisible"
+          [nzTitle]="(dialogStatus | dataOper)+'服务工单'"
+          [nzContent]="modalContent"
+          [nzFooter]="modalFooter"
+          (nzOnCancel)="handleCancel($event)"
+          [nzConfirmLoading]="isConfirmLoading"
+          (nzOnOk)="handleOk($event)"
+          [nzMaskClosable]="maskClosable">
+    <ng-template #modalContent>
+        <form nz-form [formGroup]="valForm" (ngSubmit)="submit()" role="form">
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>服务大类</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('type')">
+                    <nz-select
+                        [nzPlaceHolder]="'服务大类'"
+                        formControlName="type"
+                        [nzDisabled]="dialogStatus === 'view'">
+                        <nz-option
+                            *ngFor="let option of typeList"
+                            [nzLabel]="option.label"
+                            [nzValue]="option.value">
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>服务小类</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('subType')">
+                    <nz-select
+                        [nzPlaceHolder]="'服务小类'"
+                        formControlName="subType"
+                        [nzDisabled]="dialogStatus === 'view'">
+                        <nz-option
+                            *ngFor="let option of subTypeList"
+                            [nzLabel]="option.label"
+                            [nzValue]="option.value">
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>服务来源</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('source')">
+                    <nz-select
+                        [nzPlaceHolder]="'服务来源'"
+                        formControlName="source"
+                        [nzDisabled]="dialogStatus === 'view'">
+                        <nz-option
+                            *ngFor="let option of sourceList"
+                            [nzLabel]="option.label"
+                            [nzValue]="option.value">
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>工单状态</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('status')">
+                    <nz-select
+                        [nzPlaceHolder]="'工单状态'"
+                        formControlName="source"
+                        [nzDisabled]="dialogStatus === 'view'">
+                        <nz-option
+                            *ngFor="let option of statusList"
+                            [nzLabel]="option.label"
+                            [nzValue]="option.value">
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+			 <div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>工单内容</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('content')">
+                    <nz-input formControlName="content" [nzPlaceHolder]="'工单内容'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>服务发起人</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('submitter')">
+                    <nz-input formControlName="submitter" [nzPlaceHolder]="'服务发起人'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>联系信息</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('contactInfo')">
+                    <nz-input formControlName="contactInfo" [nzPlaceHolder]="'联系信息'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>服务优先级</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('priority')">
+                    <nz-select
+                        [nzPlaceHolder]="'服务优先级'"
+                        formControlName="priority"
+                        [nzDisabled]="dialogStatus === 'view'">
+                        <nz-option
+                            *ngFor="let option of priorityList"
+                            [nzLabel]="option.label"
+                            [nzValue]="option.value">
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>发起时间</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('startTime')">
+                    <nz-input formControlName="startTime" [nzPlaceHolder]="'发起时间'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>指派时间</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('assignTime')">
+                    <nz-input formControlName="assignTime" [nzPlaceHolder]="'指派时间'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>接单时间</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('acceptTime')">
+                    <nz-input formControlName="acceptTime" [nzPlaceHolder]="'接单时间'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>完成时间</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('finishTime')">
+                    <nz-input formControlName="finishTime" [nzPlaceHolder]="'完成时间'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>评价时间</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('rateTime')">
+                    <nz-input formControlName="rateTime" [nzPlaceHolder]="'评价时间'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>处理工单的员工ID</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('dealEmployeeId')">
+                    <nz-input formControlName="dealEmployeeId" [nzPlaceHolder]="'处理工单的员工ID'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>工单处理描述</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('dealDesc')">
+                    <nz-input formControlName="dealDesc" [nzPlaceHolder]="'工单处理描述'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>服务费用</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('dealFee')">
+                    <nz-input formControlName="dealFee" [nzPlaceHolder]="'服务费用'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>工单处理附件</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('dealAttachment')">
+                    <nz-input formControlName="dealAttachment" [nzPlaceHolder]="'工单处理附件'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>服务评价</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('rateLevel')">
+                    <nz-select
+                        [nzPlaceHolder]="'服务评价'"
+                        formControlName="rateLevel"
+                        [nzDisabled]="dialogStatus === 'view'">
+                        <nz-option
+                            *ngFor="let option of rateLevelList"
+                            [nzLabel]="option.label"
+                            [nzValue]="option.value">
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>服务评价描述</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('rateDesc')">
+                    <nz-input formControlName="rateDesc" [nzPlaceHolder]="'服务评价描述'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>工单评价附件</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('rateAttachment')">
+                    <nz-input formControlName="rateAttachment" [nzPlaceHolder]="'工单评价附件'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>评价人</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('rateUsername')">
+                    <nz-input formControlName="rateUsername" [nzPlaceHolder]="'评价人'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                </div>
+            </div>
+        </form>
+    </ng-template>
+    <ng-template #modalFooter>
+        <button nz-button [nzType]="'default'" [nzSize]="'large'" (click)="handleCancel($event)">
+            {{dialogStatus == 'view'?'关 闭':'取 消'}}
+        </button>
+        <button nz-button *ngIf="dialogStatus != 'view'" [disabled]="!valForm.valid" [nzType]="'primary'" [nzSize]="'large'" (click)="handleOk($event)" [nzLoading]="isConfirmLoading">
+            提 交
+        </button>
+    </ng-template>
+
+</nz-modal>

@@ -1,0 +1,250 @@
+<div class="content__title">
+    <h1>
+        平台账号管理
+        <!--<small>A complete set of notification posibilities</small>-->
+    </h1>
+    <!--<nz-breadcrumb>-->
+    <!--<nz-breadcrumb-item>-->
+    <!--<a [routerLink]="['/dashboard']">Dashboard</a>-->
+    <!--</nz-breadcrumb-item>-->
+    <!--<nz-breadcrumb-item>-->
+    <!--<a [routerLink]="['/elements/buttons']">Buttons</a>-->
+    <!--</nz-breadcrumb-item>-->
+    <!--<nz-breadcrumb-item>-->
+    <!--Notifications-->
+    <!--</nz-breadcrumb-item>-->
+    <!--</nz-breadcrumb>-->
+</div>
+
+<nz-card>
+    <ng-template #body>
+        <form nz-form>
+            <div nz-row nz-form-item [nzGutter]="0" class="mb0">
+
+                <div nz-form-label nz-col [nzSm]="1">
+                    <label>账号名</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="2">
+                    <nz-input [(ngModel)]="filter.sysUsername" name="filter.sysUsername"></nz-input>
+                </div>
+                <div nz-form-label nz-col [nzSm]="2">
+                    <label>部门</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="3">
+                    <nz-dropdown>
+                        <a class="ant-dropdown-link" nz-dropdown>
+                            {{filter.deptId | deptId}} <i class="anticon anticon-down"></i>
+                        </a>
+                        <ul nz-menu>
+                            <li
+                                nz-menu-item
+                                *ngFor="let deptId of filterDeptIdList"
+                                (click)="filter.deptId=deptId.value">{{deptId.label}}
+                            </li>
+                        </ul>
+                    </nz-dropdown>
+                </div>
+				<div nz-form-label nz-col [nzSm]="2">
+                    <label>岗位</label>
+                </div>
+				<div nz-form-control nz-col [nzSm]="3">
+                    <nz-dropdown>
+                        <a class="ant-dropdown-link" nz-dropdown>
+                            {{filter.position | position}} <i class="anticon anticon-down"></i>
+                        </a>
+                        <ul nz-menu>
+                            <li
+                                nz-menu-item
+                                *ngFor="let position of filterPositionList"
+                                (click)="filter.position=position.value">{{position.label}}
+                            </li>
+                        </ul>
+                    </nz-dropdown>
+                </div>
+				<div nz-form-label nz-col [nzSm]="1">
+                    <label>员工姓名</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="2">
+                    <nz-input [(ngModel)]="filter.employeeName" name="filter.employeeName"></nz-input>
+                </div>
+				<div nz-form-label nz-col [nzSm]="1">
+                    <label>联系电话</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="2">
+                    <nz-input [(ngModel)]="filter.phone" name="filter.phone"></nz-input>
+                </div>
+				<div nz-form-label nz-col [nzSm]="2">
+                    <label>在职状态</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="3">
+                    <nz-dropdown>
+                        <a class="ant-dropdown-link" nz-dropdown>
+                            {{filter.status | status}} <i class="anticon anticon-down"></i>
+                        </a>
+                        <ul nz-menu>
+                            <li
+                                nz-menu-item
+                                *ngFor="let status of filterStatusList"
+                                (click)="filter.status=status.value">{{status.label}}
+                            </li>
+                        </ul>
+                    </nz-dropdown>
+                </div>
+				
+                <div nz-col [nzSm]="4" [nzOffset]="0">
+                    <button nz-button [nzType]="'primary'" (click)="load(true)" [nzLoading]="loading">查询</button>
+                    <button nz-button (click)="openDetail({})" [disabled]="loading">创建账号</button>
+                </div>
+            </div>
+        </form>
+    </ng-template>
+</nz-card>
+
+<div nz-row [nzGutter]="16">
+    <div nz-col [nzMd]="24">
+        <nz-card>
+            <ng-template #body>
+                <!--<div class="mb-sm text-right">-->
+                <!--<nz-dropdown>-->
+                <!--<button nz-button nz-dropdown>-->
+                <!--<span>Export</span> <i class="anticon anticon-down"></i>-->
+                <!--</button>-->
+                <!--<ul nz-menu>-->
+                <!--<li nz-menu-item>Excel</li>-->
+                <!--<li nz-menu-item>JSON</li>-->
+                <!--<li nz-menu-item>PNG</li>-->
+                <!--</ul>-->
+                <!--</nz-dropdown>-->
+                <!--</div>-->
+                <nz-table #nzTable
+                          [nzAjaxData]="list"
+                          [nzShowSizeChanger]="true"
+                          [nzLoading]="loading"
+                          [nzTotal]="total"
+                          [(nzPageIndex)]="pageIndex"
+                          (nzPageIndexChange)="load()"
+                          [(nzPageSize)]="pageSize"
+                          (nzPageSizeChange)="load(true)">
+                    <thead nz-thead>
+                    <tr>
+                        <th nz-th><span>帐号名</span></th>
+                        <th nz-th><span>员工姓名</span></th>
+                        <th nz-th><span>岗位</span></th>
+                        <th nz-th><span>帐号状态</span></th>
+						<th nz-th><span>绑定微信</span></th>
+                        <th nz-th><span>操作</span></th>
+                    </tr>
+                    </thead>
+                    <tbody nz-tbody>
+                    <tr nz-tbody-tr *ngFor="let data of nzTable.data">
+                        <td nz-td>{{data.sysUsername}}</td>
+                        <td nz-td>{{data.employeeName}}</td>
+                        <td nz-td>{{data.deptName}}-{{data.position}}</td>
+                        <td nz-td>{{data.accountLocked | accountLockedList}}</td>
+						<td nz-td>{{data.wxOpenId}}</td>
+                        <td nz-td>
+                            <a (click)="openDetail(data)">停用</a>
+                            <span nz-table-divider></span>
+							<a (click)="openDetail(data)">启用</a>
+                            <span nz-table-divider></span>
+                            <a (click)="openDetail(data, true)">重置密码</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </nz-table>
+            </ng-template>
+        </nz-card>
+    </div>
+</div>
+
+<nz-modal [nzVisible]="isVisible"
+          [nzTitle]="(dialogStatus | dataOper)+'账号'"
+          [nzContent]="modalContent"
+          [nzFooter]="modalFooter"
+          (nzOnCancel)="handleCancel($event)"
+          [nzConfirmLoading]="isConfirmLoading"
+          (nzOnOk)="handleOk($event)"
+          [nzMaskClosable]="maskClosable">
+    <ng-template #modalContent>
+        <form nz-form [formGroup]="valForm" (ngSubmit)="submit()" role="form">
+            <div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>选择部门</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('deptId')">
+                    <nz-select
+                        [nzPlaceHolder]="'选择部门'"
+                        formControlName="deptId"
+                        [nzDisabled]="dialogStatus === 'view'">
+                        <nz-option
+                            *ngFor="let option of deptIdList"
+                            [nzLabel]="option.label"
+                            [nzValue]="option.value">
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>选择岗位</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('position')">
+                    <nz-select
+                        [nzPlaceHolder]="'选择岗位'"
+                        formControlName="position"
+                        [nzDisabled]="dialogStatus === 'view'">
+                        <nz-option
+                            *ngFor="let option of positionList"
+                            [nzLabel]="option.label"
+                            [nzValue]="option.value">
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+			 <div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>员工姓名</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('employeeId')">
+                    <nz-input formControlName="employeeId" [nzPlaceHolder]="'员工姓名'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>账号名称(不能重复)</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('username')">
+                    <nz-input formControlName="username" [nzPlaceHolder]="'账号名称(不能重复)'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>平台角色</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('roleId')">
+                    <nz-select
+                        [nzPlaceHolder]="'平台角色'"
+                        formControlName="roleId"
+                        [nzDisabled]="dialogStatus === 'view'">
+                        <nz-option
+                            *ngFor="let option of roleIdList"
+                            [nzLabel]="option.label"
+                            [nzValue]="option.value">
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+        </form>
+    </ng-template>
+    <ng-template #modalFooter>
+        <button nz-button [nzType]="'default'" [nzSize]="'large'" (click)="handleCancel($event)">
+            {{dialogStatus == 'view'?'关 闭':'取 消'}}
+        </button>
+        <button nz-button *ngIf="dialogStatus != 'view'" [disabled]="!valForm.valid" [nzType]="'primary'" [nzSize]="'large'" (click)="handleOk($event)" [nzLoading]="isConfirmLoading">
+            提 交
+        </button>
+    </ng-template>
+
+</nz-modal>

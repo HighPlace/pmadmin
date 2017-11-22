@@ -1,0 +1,294 @@
+<div class="content__title">
+    <h1>
+        客户档案管理
+        <!--<small>A complete set of notification posibilities</small>-->
+    </h1>
+    <!--<nz-breadcrumb>-->
+    <!--<nz-breadcrumb-item>-->
+    <!--<a [routerLink]="['/dashboard']">Dashboard</a>-->
+    <!--</nz-breadcrumb-item>-->
+    <!--<nz-breadcrumb-item>-->
+    <!--<a [routerLink]="['/elements/buttons']">Buttons</a>-->
+    <!--</nz-breadcrumb-item>-->
+    <!--<nz-breadcrumb-item>-->
+    <!--Notifications-->
+    <!--</nz-breadcrumb-item>-->
+    <!--</nz-breadcrumb>-->
+</div>
+
+<nz-card>
+    <ng-template #body>
+        <form nz-form>
+            <div nz-row nz-form-item [nzGutter]="0" class="mb0">
+                <div nz-form-label nz-col [nzSm]="1">
+                    <label>分区</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="3">
+                    <nz-select
+                        nzAllowClear
+                        [nzPlaceHolder]="'选择分区'"
+                        [(ngModel)]="filter.zone"
+                        [nzShowSearch]="true"
+                        (ngModelChange)="setBuildings($event)"
+                        name="filter.zone">
+                        <nz-option
+                            *ngFor="let option of zones"
+                            [nzLabel]="option.zoneId"
+                            [nzValue]="option.zoneId">
+                        </nz-option>
+                    </nz-select>
+                </div>
+                <div nz-form-label nz-col [nzSm]="1">
+                    <label>楼宇</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="3">
+                    <nz-select
+                        nzAllowClear
+                        [nzPlaceHolder]="'选择楼宇'"
+                        [(ngModel)]="filter.building"
+                        [nzShowSearch]="true"
+                        (ngModelChange)="setUnits($event)"
+                        name="filter.building">
+                        <nz-option
+                            *ngFor="let option of buildings"
+                            [nzLabel]="option.buildingId"
+                            [nzValue]="option.buildingId">
+                        </nz-option>
+                    </nz-select>
+                </div>
+                <div nz-form-label nz-col [nzSm]="1">
+                    <label>单元</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="3">
+                    <nz-select
+                        nzAllowClear
+                        [nzPlaceHolder]="'选择单元'"
+                        [(ngModel)]="filter.unit"
+                        [nzShowSearch]="true"
+                        name="filter.unit">
+                        <nz-option
+                            *ngFor="let option of units"
+                            [nzLabel]="option"
+                            [nzValue]="option">
+                        </nz-option>
+                    </nz-select>
+                </div>
+
+                <div nz-form-label nz-col [nzSm]="1">
+                    <label>房号</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="2">
+                    <nz-input [(ngModel)]="filter.room" name="filter.room"></nz-input>
+                </div>
+                <div nz-form-label nz-col [nzSm]="2">
+                    <label>房屋状态</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="3">
+                    <nz-dropdown>
+                        <a class="ant-dropdown-link" nz-dropdown>
+                            {{filter.status | roomStatus}} <i class="anticon anticon-down"></i>
+                        </a>
+                        <ul nz-menu>
+                            <li
+                                nz-menu-item
+                                *ngFor="let status of filterStatusList"
+                                (click)="filter.status=status.value">{{status.label}}
+                            </li>
+                        </ul>
+                    </nz-dropdown>
+                </div>
+				
+				<div nz-form-label nz-col [nzSm]="2">
+                    <label>客户姓名</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="2">
+                    <nz-input [(ngModel)]="filter.customerName" name="filter.customerName"></nz-input>
+                </div>
+				<div nz-form-label nz-col [nzSm]="2">
+                    <label>电话号码</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="2">
+                    <nz-input [(ngModel)]="filter.phone" name="filter.phone"></nz-input>
+                </div>
+				<div nz-form-label nz-col [nzSm]="2">
+                    <label>车牌号</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="2">
+                    <nz-input [(ngModel)]="filter.plateNo" name="filter.plateNo"></nz-input>
+                </div>
+				
+                <div nz-col [nzSm]="4" [nzOffset]="0">
+                    <button nz-button [nzType]="'primary'" (click)="load(true)" [nzLoading]="loading">查询</button>
+                    <button nz-button (click)="openDetail({})" [disabled]="loading">新增</button>
+                </div>
+            </div>
+        </form>
+    </ng-template>
+</nz-card>
+
+<div nz-row [nzGutter]="16">
+    <div nz-col [nzMd]="24">
+        <nz-card>
+            <ng-template #body>
+                <!--<div class="mb-sm text-right">-->
+                <!--<nz-dropdown>-->
+                <!--<button nz-button nz-dropdown>-->
+                <!--<span>Export</span> <i class="anticon anticon-down"></i>-->
+                <!--</button>-->
+                <!--<ul nz-menu>-->
+                <!--<li nz-menu-item>Excel</li>-->
+                <!--<li nz-menu-item>JSON</li>-->
+                <!--<li nz-menu-item>PNG</li>-->
+                <!--</ul>-->
+                <!--</nz-dropdown>-->
+                <!--</div>-->
+                <nz-table #nzTable
+                          [nzAjaxData]="list"
+                          [nzShowSizeChanger]="true"
+                          [nzLoading]="loading"
+                          [nzTotal]="total"
+                          [(nzPageIndex)]="pageIndex"
+                          (nzPageIndexChange)="load()"
+                          [(nzPageSize)]="pageSize"
+                          (nzPageSizeChange)="load(true)">
+                    <thead nz-thead>
+                    <tr>
+                        <th nz-th><span>客户姓名</span></th>
+						<th nz-th><span>性别</span></th>
+                        <th nz-th><span>手机</span></th>
+                        <th nz-th><span>固话</span></th>
+						<th nz-th><span>证件类型</span></th>
+                        <th nz-th><span>证件号码</span></th>
+                        <th nz-th><span>操作</span></th>
+                    </tr>
+                    </thead>
+                    <tbody nz-tbody>
+                    <tr nz-tbody-tr *ngFor="let data of nzTable.data">
+                        <td nz-td>{{data.customerName}}</td>
+                        <td nz-td>{{data.gender}}</td>
+						<td nz-td>{{data.phone}}</td>
+                        <td nz-td>{{data.backup_phone_1}}</td>
+						<td nz-td>{{data.identityType | identityTypeList}}</td>
+                        <td nz-td>{{data.identityNo}}</td>
+                        <td nz-td>
+                            <a (click)="openDetail(data)">详情</a>
+                            <span nz-table-divider></span>
+                            <nz-popconfirm [nzTitle]="'确定要删除吗？'" [nzOkText]="'删除'" [nzCancelText]="'取消'"
+                                           (nzOnConfirm)="deleteData(data)">
+                                <a nz-popconfirm>删除</a>
+                            </nz-popconfirm>
+                            <span nz-table-divider></span>
+                            <a (click)="openDetail(data, true)">编辑</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </nz-table>
+            </ng-template>
+        </nz-card>
+    </div>
+</div>
+
+<nz-modal [nzVisible]="isVisible"
+          [nzTitle]="(dialogStatus | dataOper)+'客户档案'"
+          [nzContent]="modalContent"
+          [nzFooter]="modalFooter"
+          (nzOnCancel)="handleCancel($event)"
+          [nzConfirmLoading]="isConfirmLoading"
+          (nzOnOk)="handleOk($event)"
+          [nzMaskClosable]="maskClosable">
+    <ng-template #modalContent>
+        <form nz-form [formGroup]="valForm" (ngSubmit)="submit()" role="form">
+            <div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>客户姓名</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('customerName')">
+                    <nz-input formControlName="customerName" [nzPlaceHolder]="'客户姓名'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+					<div nz-form-explain
+                         *ngIf="getFormControl('customerName').dirty&&getFormControl('customerName').hasError('required')">
+                        客户姓名必填
+                    </div>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label nz-form-item-required>性别</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('gender')">
+                    <nz-select
+                        [nzPlaceHolder]="'性别'"
+                        formControlName="gender"
+                        [nzDisabled]="dialogStatus === 'view'">
+                        <nz-option
+                            *ngFor="let option of genderList"
+                            [nzLabel]="option.label"
+                            [nzValue]="option.value">
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+            <div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label nz-form-item-required>手机号码</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('phone')">
+                    <nz-input formControlName="phone" [nzPlaceHolder]="'手机'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                    <div nz-form-explain
+                         *ngIf="getFormControl('phone').dirty&&getFormControl('phone').hasError('required')">
+                        手机号码必填
+                    </div>
+                </div>
+            </div>
+			<div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label nz-form-item-required>固话</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('backup_phone_1')">
+                    <nz-input formControlName="backup_phone_1" [nzPlaceHolder]="'固话'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                </div>
+            </div>
+            <div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label nz-form-item-required>证件类型</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('identityType')">
+                    <nz-select
+                        [nzPlaceHolder]="'证件类型'"
+                        formControlName="identityType"
+                        [nzDisabled]="dialogStatus === 'view'">
+                        <nz-option
+                            *ngFor="let option of identityTypeList"
+                            [nzLabel]="option.label"
+                            [nzValue]="option.value">
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+            <div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label>证件号码</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('identityNo')">
+                    <nz-input formControlName="identityNo" [nzPlaceHolder]="'证件号码'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-input>
+                </div>
+				 <div nz-form-explain
+                         *ngIf="getFormControl('identityNo').dirty&&getFormControl('identityNo').hasError('required')">
+                        证件号码必填
+                 </div>
+            </div>
+        </form>
+    </ng-template>
+    <ng-template #modalFooter>
+        <button nz-button [nzType]="'default'" [nzSize]="'large'" (click)="handleCancel($event)">
+            {{dialogStatus == 'view'?'关 闭':'取 消'}}
+        </button>
+        <button nz-button *ngIf="dialogStatus != 'view'" [disabled]="!valForm.valid" [nzType]="'primary'" [nzSize]="'large'" (click)="handleOk($event)" [nzLoading]="isConfirmLoading">
+            提 交
+        </button>
+    </ng-template>
+
+</nz-modal>
