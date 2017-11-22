@@ -107,7 +107,10 @@ export class _HttpClient {
             .do(() => this.end())
             .catch((res) => {
                 this.end();
-                return res;
+                console.log('!!!!!!http post catch');
+                return new Observable((observer) => {
+                    observer.error(res);
+                });
             });
     }
 
@@ -129,7 +132,10 @@ export class _HttpClient {
             .do(() => this.end())
             .catch((res) => {
                 this.end();
-                return res;
+                console.log('!!!!!!http put catch');
+                return new Observable((observer) => {
+                    observer.error(res);
+                });
             });
     }
 
@@ -149,7 +155,10 @@ export class _HttpClient {
             .do(() => this.end())
             .catch((res) => {
                 this.end();
-                return res;
+                console.log('!!!!!!http delete catch');
+                return new Observable((observer) => {
+                    observer.error(res);
+                });
             });
     }
 }

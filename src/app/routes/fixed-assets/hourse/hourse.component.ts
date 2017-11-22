@@ -24,6 +24,7 @@ export class HourseComponent implements OnInit {
         room: '',
         status: -1
     };
+    zoneInput = '';
 
     list: Hourse[] = [];
     loading = false;
@@ -71,6 +72,13 @@ export class HourseComponent implements OnInit {
         this.http.get('/pm/property/catalog')
             .subscribe((data: any) => {
                 this.zones = data.zoneIdList || [];
+
+                if (this.filter.zone) {
+                    this.setBuildings(this.filter.zone);
+                }
+                if (this.filter.building) {
+                    this.setUnits(this.filter.building);
+                }
             }, (err: any) => {
                 this.showErr();
                 console.log(err);
@@ -85,7 +93,9 @@ export class HourseComponent implements OnInit {
 
         const params: any = {
             pageNum: this.pageIndex,
-            pageSize: this.pageSize
+            pageSize: this.pageSize,
+            sortField: 'createTime',
+            sortType: 'desc'
         };
 
         if (this.filter.zone) {
@@ -160,6 +170,7 @@ export class HourseComponent implements OnInit {
                 .subscribe((data: any) => {
                     this.isConfirmLoading = false;
                     this.isVisible = false;
+                    this.getFilter();
                     this.load();
                 }, (err: any) => {
                     this.isConfirmLoading = false;
@@ -171,6 +182,7 @@ export class HourseComponent implements OnInit {
                 .subscribe((data: any) => {
                     this.isConfirmLoading = false;
                     this.isVisible = false;
+                    this.getFilter();
                     this.load();
                 }, (err: any) => {
                     this.isConfirmLoading = false;
@@ -187,6 +199,7 @@ export class HourseComponent implements OnInit {
     deleteData(hourse: Hourse) {
         this.http.delete('/pm/property', {propertyId: hourse.propertyId})
             .subscribe((data: any) => {
+                this.getFilter();
                 this.load();
             }, (err: any) => {
                 if (err.status !== 200) {
