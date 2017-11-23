@@ -81,6 +81,23 @@
                                    [nzFormat]="'YYYY-MM-DD'"
                                    [nzPlaceHolder]="'终止日期'"></nz-datepicker>
                 </div>
+                <div nz-form-label nz-col [nzSm]="2">
+                    <label>状态</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="3">
+                    <nz-dropdown>
+                        <a class="ant-dropdown-link" nz-dropdown>
+                            {{filter.status | noticeStatus}} <i class="anticon anticon-down"></i>
+                        </a>
+                        <ul nz-menu>
+                            <li
+                                nz-menu-item
+                                *ngFor="let status of filterStatusList"
+                                (click)="filter.status=status.value">{{status.label}}
+                            </li>
+                        </ul>
+                    </nz-dropdown>
+                </div>
                 <div nz-col [nzSm]="4" [nzOffset]="0">
                     <button nz-button [nzType]="'primary'" (click)="load(true)" [nzLoading]="loading">查询</button>
                     <button nz-button (click)="openDetail({})" [disabled]="loading">新增</button>
@@ -129,7 +146,7 @@
                         <td nz-td>{{data.type}}</td>
                         <td nz-td>{{data.title}}</td>
                         <td nz-td>{{data.publishDate}}</td>
-                        <td nz-td>{{data.status | statusList}}</td>
+                        <td nz-td>{{data.status | noticeStatus}}</td>
                         <td nz-td>
                             <a (click)="openDetail(data)">详情</a>
                             <span nz-table-divider></span>
@@ -189,25 +206,13 @@
                     <label>公告内容</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('content')">
-                    <nz-input formControlName="content" [nzPlaceHolder]="'公告内容'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    <nz-input nzType="textarea"
+                              [nzAutosize]="{minRows:3, maxRows:10}"
+                              formControlName="content"
+                              [nzPlaceHolder]="'公告内容'"
+                              [nzSize]="'large'"
+                              [nzDisabled]="dialogStatus === 'view'">
                     </nz-input>
-                </div>
-            </div>
-			<div nz-row nz-form-item>
-                <div nz-form-label nz-col [nzSpan]="7">
-                    <label>公告状态</label>
-                </div>
-                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('status')">
-                    <nz-select
-                        [nzPlaceHolder]="'公告状态'"
-                        formControlName="status"
-                        [nzDisabled]="dialogStatus === 'view'">
-                        <nz-option
-                            *ngFor="let option of statusList"
-                            [nzLabel]="option.label"
-                            [nzValue]="option.value">
-                        </nz-option>
-                    </nz-select>
                 </div>
             </div>
 			<div nz-row nz-form-item>
@@ -215,26 +220,12 @@
                     <label>有效日期</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('validDate')">
-                    <nz-input formControlName="validDate" [nzPlaceHolder]="'有效日期'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
-                    </nz-input>
-                </div>
-            </div>
-			<div nz-row nz-form-item>
-                <div nz-form-label nz-col [nzSpan]="7">
-                    <label>发布方</label>
-                </div>
-                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('publisher')">
-                    <nz-input formControlName="publisher" [nzPlaceHolder]="'发布方'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
-                    </nz-input>
-                </div>
-            </div>
-			<div nz-row nz-form-item>
-                <div nz-form-label nz-col [nzSpan]="7">
-                    <label>审批方</label>
-                </div>
-                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('approver')">
-                    <nz-input formControlName="approver" [nzPlaceHolder]="'审批方'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
-                    </nz-input>
+                    <nz-datepicker formControlName="validDate"
+                                   [nzPlaceHolder]="'有效日期'"
+                                   [nzFormat]="'YYYY-MM-DD'"
+                                   [nzSize]="'large'"
+                                   [nzDisabled]="dialogStatus === 'view'">
+                    </nz-datepicker>
                 </div>
             </div>
         </form>

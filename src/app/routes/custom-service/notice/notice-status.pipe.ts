@@ -2,8 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { statusList } from './data-model';
 
 
-@Pipe({ name: 'roomStatus' })
-export class RoomStatusPipe implements PipeTransform {
+@Pipe({ name: 'noticeStatus' })
+export class NoticeStatusPipe implements PipeTransform {
     transform(value: number): string {
         let label = '未知';
 
