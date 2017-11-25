@@ -6,7 +6,6 @@ import { RouterModule } from '@angular/router';
 import { AngularWebStorageModule } from 'angular-web-storage';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { TranslateModule } from '@ngx-translate/core';
-import { ChartsModule } from 'ng2-charts/ng2-charts';
 
 import { SparklineDirective } from './directives/sparkline/sparkline.directive';
 import { DownFileDirective } from '@shared/directives/down-file.directive';
@@ -28,8 +27,7 @@ const HELPERS = [ ModalHelper ];
         ReactiveFormsModule,
         HttpClientModule,
         AngularWebStorageModule,
-        NgZorroAntdModule.forRoot(),
-        ChartsModule
+        NgZorroAntdModule.forRoot()
     ],
     declarations: [...DIRECTIVES, ...PIPES],
     providers: [ ...HELPERS ],
@@ -41,7 +39,6 @@ const HELPERS = [ ModalHelper ];
         RouterModule,
         AngularWebStorageModule,
         TranslateModule,
-        ChartsModule,
 
         ...DIRECTIVES,
         ...PIPES

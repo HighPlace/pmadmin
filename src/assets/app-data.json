@@ -13,7 +13,6 @@
         "children": [{
             "text": "房产和客户管理",
             "translate": "房产和客户管理",
-            "link": "/elements",
             "icon": "icon-chemistry",
             "module": 1,
             "acl": "role-a",
@@ -33,19 +32,18 @@
         {
             "text": "行政和组织管理",
             "translate": "行政和组织管理",
-            "link": "/forms",
             "icon": "icon-note",
             "module": 2,
             "acl": "role-a",
             "children": [
                 {
                     "text": "组织架构管理",
-                    "link": "/forms/standard",
+                    "link": "/elements/buttons",
                     "translate": "组织架构管理"
                 },
                 {
                     "text": "员工档案管理",
-                    "link": "/forms/validation",
+                    "link": "/elements/modal",
                     "translate": "员工档案管理"
                 }
             ]
@@ -53,28 +51,27 @@
         {
             "text": "收费信息管理",
             "translate": "收费信息管理",
-            "link": "/charts",
             "icon": "icon-graph",
             "module": 3,
             "acl": "role-a",
             "children": [
                 {
                     "text": "收费科目管理",
-                    "link": "/forms/cropper"
+                    "link": "/elements/sweetalert"
                 },
                 {
                     "text": "账单类型管理",
-                    "link": "/forms/upload",
+                    "link": "/elements/tree-antd",
                     "translate": "账单类型管理"
                 },
                 {
                     "text": "费用出账",
-                    "link": "/forms/extended",
+                    "link": "/elements/sortable",
                     "translate": "费用出账"
                 },
                 {
                     "text": "账单费用明细",
-                    "link": "/charts/chartjs",
+                    "link": "/elements/spin",
                     "translate": "账单费用明细"
                 }
             ]
@@ -82,19 +79,18 @@
         {
             "text": "客户服务",
             "translate": "客户服务",
-            "link": "/tables",
             "icon": "icon-grid",
             "module": 4,
             "acl": "role-b",
             "children": [
                 {
                     "text": "信息发布",
-                    "link": "/tables/standard",
+                    "link": "/elements/dropdown",
                     "translate": "信息发布"
                 },
                 {
                     "text": "报事保修",
-                    "link": "/tables/full",
+                    "link": "/elements/grid",
                     "translate": "报事保修"
                 }
             ]
@@ -102,17 +98,16 @@
         {
             "text": "系统管理",
             "translate": "系统管理",
-            "link": "/maps",
             "icon": "icon-map",
             "module": 5,
             "acl": "role-b",
             "children": [{
                 "text": "平台账号管理",
-                "link": "/maps/qq",
+                "link": "/elements/colors",
                 "translate": "平台账号管理"
             }, {
                 "text": "物业微信公众号授权",
-                "link": "/maps/baidu",
+                "link": "/elements/iconsfont",
                 "translate": "物业微信公众号授权"
             }]
         }]

@@ -6,7 +6,6 @@ import { ForgetComponent } from './pages/forget/forget.component';
 import { MaintenanceComponent } from './pages/maintenance/maintenance.component';
 import { Page404Component } from './pages/404/404.component';
 import { Page500Component } from './pages/500/500.component';
-import { DashboardV1Component } from './dashboard/v1/v1.component';
 
 export const routes = [
     {
@@ -14,13 +13,10 @@ export const routes = [
         component: LayoutComponent,
         children: [
             { path: '', redirectTo: 'fixedassets/hourse', pathMatch: 'full' },
-            { path: 'dashboard', redirectTo: 'dashboard/v1', pathMatch: 'full' },
-            { path: 'dashboard/v1', component: DashboardV1Component, data: { translate: 'dashboard_v1' } },
             { path: 'fixedassets', loadChildren: './fixed-assets/fixed-assets.module#FixedAssetsModule' },
             { path: 'widgets', loadChildren: './widgets/widgets.module#WidgetsModule' },
             { path: 'elements', loadChildren: './elements/elements.module#ElementsModule' },
             { path: 'forms', loadChildren: './forms/forms.module#FormsModule' },
-            { path: 'charts', loadChildren: './charts/charts.module#ChartsModule' },
             { path: 'tables', loadChildren: './tables/tables.module#TablesModule' },
             { path: 'maps', loadChildren: './maps/maps.module#MapsModule' },
             { path: 'logics', loadChildren: './logics/logics.module#LogicsModule' },
