@@ -1,3 +1,54 @@
+# update no more, please to [release](https://github.com/cipchk/ng-alain/releases) page.
+
+-------------------
+
+# 0.1.2-beta.10
+
++ ng-zorro-antd 0.6.x 由于[#504](https://github.com/NG-ZORRO/ng-zorro-antd/issues/504)的原因回滚至最低版本，本次只对 ng-zorro-antd 组件国际化产生影响。
+
+# 0.1.2-beta.9
+
++ 新增 ng-zorro-antd 组件的国际化，见 [translator.service](./src/app/core/translator/translator.service.ts)
+    + 当前 ng-zorro-antd 为 `rc` 版本，若遇到构建当中存在 `@angular/cdk` 问题，请手动安装。
+
+> 下周末将发布正式版，这段时间将不会再新增任何功能。
+
+# 0.1.2-beta.8
+
++ 增加快捷菜单，见 [menu.service.ts](./src/app/core/services/menu.service.ts)
++ 修复菜单小三角与菜单文本垂直问题
++ 移除 ng-zorro-antd 已知问题且修复的 bug 链接地址 `header.component.ts`。
+
+# 0.1.2-beta.7
+
++ 增加Docker部署
+    + 增加 `.dockerignore`、`docker-compose.yml`、`docker-compose.debug.yml`、`Dockerfile` 文件
+    + 增加 `_nginx` 目录
+
+# 0.1.2-beta.6
+
++ 增加全屏布局，见[用户关系图](https://cipchk.github.io/ng-alain/#/data-v/relation)
++ 侧边栏主菜单链接支持 `target` 属性
++ 基于Front-End-Checklist优化 `index.html`
+
+# 0.1.2-beta.5
+
++ 新增 `[_src]` 指令，包括以下特性：
+    + 支持微信、qq头像规则缩略图规则
+    + 支持移除http&https协议http
+    + 支持增加onerror事件
++ 样式相关：
+    + 移除 `text-truncate` 的 `!important`。
+    + 调整 `.simple-table` 的 `img` 边距由 `padding-left` 改变成 `margin-left` 更为合理。
++ 修复用户EMAIL无法缩短问题，closes [#35](https://github.com/cipchk/ng-alain/issues/35)
++ 修复注册、找回、屏幕页面密码框类型问题，closes [#34](https://github.com/cipchk/ng-alain/issues/34)
++ 调整 `sparkline.directive.ts` 目录。
++ 调整tsline规则：`curly: false`。
+
+# 0.1.2-beta.4
+
++ 修复分页当前页hover文字颜色问题，closes [#31](https://github.com/cipchk/ng-alain/issues/31)
+
 # 0.1.2-beta.3
 
 + 修复 `file-upload` 按钮由于 `span` 样式关系导致元素无法触发问题，closes [#27](https://github.com/cipchk/ng-alain/issues/27)

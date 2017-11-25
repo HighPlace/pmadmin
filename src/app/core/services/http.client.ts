@@ -55,7 +55,7 @@ export class _HttpClient {
     }
 
     fullCgiPath(url: string): string {
-        if (!url.startsWith('https://') && !url.startsWith('http://')) {
+        if (!url.startsWith('https://') && !url.startsWith('http://') && !url.startsWith('.')) {
             url = 'https://www.bellostanza.com/api' + url;
         }
         return url;
