@@ -4,7 +4,7 @@ import { SharedModule } from '@shared/shared.module';
 import { PagesModule } from './pages/pages.module';
 
 import { routes } from './routes';
-import { DashboardV1Component } from './dashboard/v1/v1.component';
+
 
 @NgModule({
     imports: [
@@ -13,7 +13,7 @@ import { DashboardV1Component } from './dashboard/v1/v1.component';
         PagesModule
     ],
     declarations: [
-        DashboardV1Component
+
     ],
     exports: [
         RouterModule

@@ -137,7 +137,7 @@
                         <th nz-th><span>楼宇</span></th>
                         <th nz-th><span>单元</span></th>
                         <th nz-th><span>房号</span></th>
-                        <th nz-th><span>套内／产权面积</span></th>
+                        <th nz-th><span>套内/产权面积</span></th>
                         <th nz-th><span>房屋状态</span></th>
                         <th nz-th><span>操作</span></th>
                     </tr>
@@ -148,7 +148,7 @@
                         <td nz-td>{{data.buildingId}}</td>
                         <td nz-td>{{data.unitId}}</td>
                         <td nz-td>{{data.roomId}}</td>
-                        <td nz-td>{{data.floorArea | numFormat}}/{{data.propertyArea | numFormat}}</td>
+                        <td nz-td>{{data.floorArea}}/{{data.propertyArea}}</td>
                         <td nz-td>{{data.status | roomStatus}}</td>
                         <td nz-td>
                             <a (click)="openDetail(data)">详情</a>
@@ -169,7 +169,7 @@
 </div>
 
 <nz-modal [nzVisible]="isVisible"
-          [nzTitle]="(dialogStatus | dataOper)+'房产档案'"
+          [nzTitle]="(dialogStatus | dataOper)+'房产档案 '"
           [nzContent]="modalContent"
           [nzFooter]="modalFooter"
           (nzOnCancel)="handleCancel($event)"
@@ -180,36 +180,33 @@
         <form nz-form [formGroup]="valForm" (ngSubmit)="submit()" role="form">
             <div nz-row nz-form-item>
                 <div nz-form-label nz-col [nzSpan]="7">
-                    <label>区域</label>
+                    <label>分区</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('zoneId')">
-                    <nz-input formControlName="zoneId" [nzPlaceHolder]="'区域'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    <nz-input formControlName="zoneId" [nzPlaceHolder]="'分区'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
                     </nz-input>
                 </div>
             </div>
             <div nz-row nz-form-item>
                 <div nz-form-label nz-col [nzSpan]="7">
-                    <label nz-form-item-required>楼号</label>
+                    <label nz-form-item-required>楼宇</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('buildingId')">
-                    <nz-input formControlName="buildingId" [nzPlaceHolder]="'楼号'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    <nz-input formControlName="buildingId" [nzPlaceHolder]="'楼宇'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
                     </nz-input>
                     <div nz-form-explain
                          *ngIf="getFormControl('buildingId').dirty&&getFormControl('buildingId').hasError('required')">
-                        楼号必填
+                        楼宇必填
                     </div>
                 </div>
             </div>
             <div nz-row nz-form-item>
                 <div nz-form-label nz-col [nzSpan]="7">
-                    <label nz-form-item-required>单元</label>
+                    <label>单元</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('unitId')">
                     <nz-input formControlName="unitId" [nzPlaceHolder]="'单元'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
                     </nz-input>
-                    <div nz-form-explain
-                         *ngIf="getFormControl('unitId').dirty&&getFormControl('unitId').hasError('required')">单元必填
-                    </div>
                 </div>
             </div>
             <div nz-row nz-form-item>
@@ -252,11 +249,14 @@
             </div>
             <div nz-row nz-form-item>
                 <div nz-form-label nz-col [nzSpan]="7">
-                    <label>产权面积</label>
+                    <label nz-form-item-required>产权面积</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('propertyArea')">
                     <nz-input formControlName="propertyArea" [nzPlaceHolder]="'产权面积'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
                     </nz-input>
+                    <div nz-form-explain
+                         *ngIf="getFormControl('propertyArea').dirty&&getFormControl('propertyArea').hasError('required')">产权面积必填
+                    </div>
                 </div>
             </div>
             <div nz-row nz-form-item>
@@ -268,6 +268,7 @@
                     </nz-input>
                 </div>
             </div>
+            <!--
             <div nz-row nz-form-item>
                 <div nz-form-label nz-col [nzSpan]="7">
                     <label nz-form-item-required>面积单位</label>
@@ -285,6 +286,7 @@
                     </nz-select>
                 </div>
             </div>
+            -->
             <div nz-row nz-form-item>
                 <div nz-form-label nz-col [nzSpan]="7">
                     <label nz-form-item-required>房产状态</label>

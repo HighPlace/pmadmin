@@ -51,11 +51,11 @@ export class HourseComponent implements OnInit {
         this.valForm = fb.group({
             zoneId: [null, null],
             buildingId: [null, Validators.required],
-            unitId: [null, Validators.required],
+            unitId: [null, null],
             roomId: [null, Validators.required],
             houseType: [null, null],
             propertyType: [0, Validators.required],
-            propertyArea: [null, null],
+            propertyArea: [null, Validators.required],
             floorArea: [null, null],
             areaUnit: [0, Validators.required],
             status: [0, Validators.required]
@@ -94,8 +94,8 @@ export class HourseComponent implements OnInit {
         const params: any = {
             pageNum: this.pageIndex,
             pageSize: this.pageSize,
-            sortField: 'createTime',
-            sortType: 'desc'
+            sortField: 'zoneId',
+            sortType: 'asc'
         };
 
         if (this.filter.zone) {
