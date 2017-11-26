@@ -69,6 +69,29 @@ export class NoticeComponent implements OnInit {
         });
     }
 
+    startValueChange = () => {
+        if (this.filter.startDate > this.filter.endDate) {
+            this.filter.endDate = null;
+        }
+    };
+    endValueChange = () => {
+        if (this.filter.startDate > this.filter.endDate) {
+            this.filter.startDate = null;
+        }
+    };
+    disabledStartDate = (startValue) => {
+        if (!startValue || !this.filter.endDate) {
+            return false;
+        }
+        return startValue.getTime() >= this.filter.endDate.getTime();
+    };
+    disabledEndDate = (endValue) => {
+        if (!endValue || !this.filter.startDate) {
+            return false;
+        }
+        return endValue.getTime() <= this.filter.startDate.getTime();
+    };
+
     load(reset?: boolean) {
         if (reset) {
             this.pageIndex = 1;
