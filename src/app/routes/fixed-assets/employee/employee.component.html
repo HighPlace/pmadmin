@@ -318,7 +318,7 @@
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('entryDate')">
                     <!--<nz-input formControlName="entryDate" [nzPlaceHolder]="'员工入职日期'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
                     </nz-input>-->
-                    <nz-datepicker formControlName="entryDate" [nzPlaceHolder]="'选择入职日期'"  [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    <nz-datepicker formControlName="entryDate" [nzPlaceHolder]="'选择入职日期'" [nzFormat]="'YYYY-MM-DD'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
                     </nz-datepicker>
                 </div>
             </div>
