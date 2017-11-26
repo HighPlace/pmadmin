@@ -17,6 +17,7 @@ export class HourseComponent implements OnInit {
     statusList: any[] = [];
     propertyTypeList: any[] = [];
     areaUnitList: any[] = [];
+    sampleUrl = '';
     filter: any = {
         zone: '',
         building: '',
@@ -79,6 +80,13 @@ export class HourseComponent implements OnInit {
                 if (this.filter.building) {
                     this.setUnits(this.filter.building);
                 }
+            }, (err: any) => {
+                this.showErr();
+                console.log(err);
+            });
+        this.http.get('/pm/aliyun/sampleUrl/property')
+            .subscribe((data: any) => {
+                this.sampleUrl = data.fileUrl || [];
             }, (err: any) => {
                 this.showErr();
                 console.log(err);
