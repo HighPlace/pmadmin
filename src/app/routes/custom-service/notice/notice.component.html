@@ -19,64 +19,63 @@
 <nz-card>
     <ng-template #body>
         <form nz-form>
-            <div nz-row nz-form-item [nzGutter]="0" class="mb0">
-
-                <div nz-form-label nz-col [nzSm]="1">
+            <div nz-row nz-form-item [nzGutter]="8">
+                <div nz-form-label nz-col [nzSm]="3">
                     <label>标题</label>
                 </div>
-                <div nz-form-control nz-col [nzSm]="3">
+                <div nz-form-control nz-col [nzSm]="8">
                     <nz-select
                         nzAllowClear
                         [nzPlaceHolder]="'输入标题'"
                         [nzFilter]="false"
                         [(ngModel)]="filter.title"
+                        name="filter.title"
                         (nzSearchChange)="titleSearchChange($event)"
                         [nzNotFoundContent]="'无法找到'"
                         [nzShowSearch]="true">
                         <nz-option
                             *ngFor="let option of titleSearchOptions"
-                            [nzLabel]="option[0]"
-                            [nzValue]="option[0]">
+                            [nzLabel]="option"
+                            [nzValue]="option">
                         </nz-option>
                     </nz-select>
                 </div>
-                <div nz-form-label nz-col [nzSm]="1">
+                <div nz-form-label nz-col [nzSm]="3">
                     <label>公告类型</label>
                 </div>
-                <div nz-form-control nz-col [nzSm]="3">
+                <div nz-form-control nz-col [nzSm]="8">
                     <nz-select
                         nzAllowClear
                         [nzPlaceHolder]="'输入类型'"
-                        [nzFilter]="false"
+                        [nzFilter]="true"
                         [(ngModel)]="filter.type"
+                        name="filter.type"
                         (nzSearchChange)="typeSearchChange($event)"
                         [nzNotFoundContent]="'无法找到'"
                         [nzShowSearch]="true">
                         <nz-option
                             *ngFor="let option of typeSearchOptions"
-                            [nzLabel]="option[0]"
-                            [nzValue]="option[0]">
+                            [nzLabel]="option"
+                            [nzValue]="option">
                         </nz-option>
                     </nz-select>
                 </div>
-				<div nz-form-label nz-col [nzSm]="1">
-                    <label>发布日期</label>
+            </div>
+            <div nz-row nz-form-item [nzGutter]="8" class="mb0">
+                <div nz-form-label nz-col [nzSm]="3">
+                    <label>时间范围</label>
                 </div>
-                <div nz-form-control nz-col [nzSm]="3">
-                    <nz-input [(ngModel)]="filter.publishDateFrom" name="filter.publishDateFrom"></nz-input>
+                <div nz-form-control nz-col [nzSm]="9">
                     <nz-datepicker (ngModelChange)="filter.publishDateFrom=$event;startValueChange()"
                                    [ngModel]="filter.publishDateFrom"
+                                   name="filter.publishDateFrom"
                                    [nzDisabledDate]="disabledStartDate"
                                    [nzFormat]="'YYYY-MM-DD'"
                                    [nzPlaceHolder]="'起始日期'"></nz-datepicker>
-
-                </div>
-				-
-				<div nz-form-control nz-col [nzSm]="3">
-                    <nz-input [(ngModel)]="filter.publishDateTo" name="filter.publishDateTo"></nz-input>
-
+                    &nbsp;
                     <nz-datepicker (ngModelChange)="filter.publishDateTo=$event;endValueChange()"
                                    [ngModel]="filter.publishDateTo"
+                                   name="filter.publishDateTo"
                                    [nzDisabledDate]="disabledEndDate"
                                    [nzFormat]="'YYYY-MM-DD'"
                                    [nzPlaceHolder]="'终止日期'"></nz-datepicker>
@@ -84,7 +83,7 @@
                 <div nz-form-label nz-col [nzSm]="2">
                     <label>状态</label>
                 </div>
-                <div nz-form-control nz-col [nzSm]="3">
+                <div nz-form-control nz-col [nzSm]="5">
                     <nz-dropdown>
                         <a class="ant-dropdown-link" nz-dropdown>
                             {{filter.status | noticeStatus}} <i class="anticon anticon-down"></i>
@@ -98,7 +97,7 @@
                         </ul>
                     </nz-dropdown>
                 </div>
-                <div nz-col [nzSm]="4" [nzOffset]="0">
+                <div nz-col [nzSm]="5" [nzOffset]="0">
                     <button nz-button [nzType]="'primary'" (click)="load(true)" [nzLoading]="loading">查询</button>
                     <button nz-button (click)="openDetail({})" [disabled]="loading">新增</button>
                 </div>
@@ -145,7 +144,7 @@
                     <tr nz-tbody-tr *ngFor="let data of nzTable.data">
                         <td nz-td>{{data.type}}</td>
                         <td nz-td>{{data.title}}</td>
-                        <td nz-td>{{data.publishDate}}</td>
+                        <td nz-td>{{data.publishDate | _date}}</td>
                         <td nz-td>{{data.status | noticeStatus}}</td>
                         <td nz-td>
                             <a (click)="openDetail(data, true)">详情</a>
@@ -156,7 +155,7 @@
                             </nz-popconfirm>
                             <span nz-table-divider></span>
                             <nz-popconfirm [nzTitle]="'确定要发布吗？'" [nzOkText]="'发布'" [nzCancelText]="'取消'"
-                                           (nzOnConfirm)="sendData(data)">
+                                           (nzOnConfirm)="releaseData(data)">
                                 <a nz-popconfirm>发布</a>
                             </nz-popconfirm>
                         </td>
@@ -183,28 +182,35 @@
                     <label>公告标题</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('title')">
-                    <nz-input formControlName="title" [nzPlaceHolder]="'公告标题'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    <nz-input formControlName="title" [nzPlaceHolder]="'公告标题'" [nzSize]="'large'"
+                              [nzDisabled]="dialogStatus === 'view'">
                     </nz-input>
                 </div>
             </div>
-			<div nz-row nz-form-item>
+            <div nz-row nz-form-item>
                 <div nz-form-label nz-col [nzSpan]="7">
                     <label>公告类型</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('type')">
                     <nz-select
+                        nzAllowClear
                         [nzPlaceHolder]="'公告类型'"
+                        [nzFilter]="true"
                         formControlName="type"
+                        (nzSearchChange)="typeChange($event)"
+                        (ngModelChange)="typeModelChange($event)"
+                        [nzNotFoundContent]="'无法找到'"
+                        [nzShowSearch]="true"
                         [nzDisabled]="dialogStatus === 'view'">
                         <nz-option
-                            *ngFor="let option of typeList"
-                            [nzLabel]="option.label"
-                            [nzValue]="option.value">
+                            *ngFor="let option of typeOptions"
+                            [nzLabel]="option"
+                            [nzValue]="option">
                         </nz-option>
                     </nz-select>
                 </div>
             </div>
-			 <div nz-row nz-form-item>
+            <div nz-row nz-form-item>
                 <div nz-form-label nz-col [nzSpan]="7">
                     <label>公告内容</label>
                 </div>
@@ -218,7 +224,7 @@
                     </nz-input>
                 </div>
             </div>
-			<div nz-row nz-form-item>
+            <div nz-row nz-form-item>
                 <div nz-form-label nz-col [nzSpan]="7">
                     <label>有效日期</label>
                 </div>
@@ -237,10 +243,12 @@
         <button nz-button [nzType]="'default'" [nzSize]="'large'" (click)="handleCancel($event)">
             {{dialogStatus == 'view'?'关 闭':'取 消'}}
         </button>
-        <button nz-button *ngIf="dialogStatus != 'view'" [disabled]="!valForm.valid" [nzType]="'primary'" [nzSize]="'large'" (click)="handleOk($event)" [nzLoading]="isConfirmLoading">
+        <button nz-button *ngIf="dialogStatus != 'view'" [disabled]="!valForm.valid" [nzType]="'primary'"
+                [nzSize]="'large'" (click)="handleOk($event)" [nzLoading]="isConfirmLoading">
             保 存
         </button>
-        <button nz-button *ngIf="dialogStatus != 'view'" [disabled]="!valForm.valid" [nzType]="'primary'" [nzSize]="'large'" (click)="handleOk($event, true)" [nzLoading]="isConfirmLoading">
+        <button nz-button *ngIf="dialogStatus != 'view'" [disabled]="!valForm.valid" [nzType]="'primary'"
+                [nzSize]="'large'" (click)="handleOk($event, true)" [nzLoading]="isConfirmLoading">
             立即发布
         </button>
     </ng-template>

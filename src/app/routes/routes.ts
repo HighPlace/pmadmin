@@ -14,6 +14,7 @@ export const routes = [
         children: [
             { path: '', redirectTo: 'fixedassets/hourse', pathMatch: 'full' },
             { path: 'fixedassets', loadChildren: './fixed-assets/fixed-assets.module#FixedAssetsModule' },
+            { path: 'customservice', loadChildren: './custom-service/custom-service.module#CustomServiceModule' },
             { path: 'widgets', loadChildren: './widgets/widgets.module#WidgetsModule' },
             { path: 'elements', loadChildren: './elements/elements.module#ElementsModule' },
             { path: 'forms', loadChildren: './forms/forms.module#FormsModule' },

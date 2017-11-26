@@ -4,6 +4,7 @@ import {NzMessageService, NzNotificationService, NzModalService} from 'ng-zorro-
 import {_HttpClient} from '@core/services/http.client';
 import {SettingsService} from '@core/services/settings.service';
 import {statusList, Notice} from './data-model';
+import * as moment from 'moment';
 
 @Component({
     selector: 'app-notice',
@@ -12,6 +13,7 @@ import {statusList, Notice} from './data-model';
 export class NoticeComponent implements OnInit {
     titleSearchOptions: any[] = [];
     typeSearchOptions: any[] = [];
+    filterStatusList: any[] = [];
     filter: any = {
         title: '',
         type: '',
@@ -32,12 +34,13 @@ export class NoticeComponent implements OnInit {
     maskClosable = false;
     dialogStatus = 'view'; // edit add
     curNotice = new Notice();
+    newTypeOption = null;
 
     constructor(private http: _HttpClient,
                 private msg: NzMessageService,
                 private setting: SettingsService,
                 fb: FormBuilder) {
-
+        this.filterStatusList = [{value: -1, label: '全部'}].concat(statusList);
         this.valForm = fb.group({
             title: [null, Validators.required],
             type: [null, Validators.required],
@@ -48,7 +51,13 @@ export class NoticeComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.initSearch();
         this.load();
+    }
+
+    initSearch() {
+        this.titleSearchChange('');
+        this.typeSearchChange('');
     }
 
     titleSearchChange(value) {
@@ -70,26 +79,26 @@ export class NoticeComponent implements OnInit {
     }
 
     startValueChange = () => {
-        if (this.filter.startDate > this.filter.endDate) {
-            this.filter.endDate = null;
+        if (this.filter.publishDateFrom > this.filter.publishDateTo) {
+            this.filter.publishDateTo = null;
         }
     };
     endValueChange = () => {
-        if (this.filter.startDate > this.filter.endDate) {
-            this.filter.startDate = null;
+        if (this.filter.publishDateFrom > this.filter.publishDateTo) {
+            this.filter.publishDateFrom = null;
         }
     };
     disabledStartDate = (startValue) => {
-        if (!startValue || !this.filter.endDate) {
+        if (!startValue || !this.filter.publishDateTo) {
             return false;
         }
-        return startValue.getTime() >= this.filter.endDate.getTime();
+        return startValue >= this.filter.publishDateTo;
     };
     disabledEndDate = (endValue) => {
-        if (!endValue || !this.filter.startDate) {
+        if (!endValue || !this.filter.publishDateFrom) {
             return false;
         }
-        return endValue.getTime() <= this.filter.startDate.getTime();
+        return endValue <= this.filter.publishDateFrom;
     };
 
     load(reset?: boolean) {
@@ -112,16 +121,20 @@ export class NoticeComponent implements OnInit {
             params.type = this.filter.type;
         }
         if (this.filter.publishDateFrom) {
-            params.publishDateFrom = this.filter.publishDateFrom;
+            params.publishDateFrom = moment(this.filter.publishDateFrom).format('YYYY-MM-DD');
         }
         if (this.filter.publishDateTo) {
-            params.publishDateTo = this.filter.publishDateTo;
+            params.publishDateTo = moment(this.filter.publishDateTo).format('YYYY-MM-DD');
+        }
+        if (this.filter.status >= 0) {
+            params.status = this.filter.status;
         }
 
         this.http.get('/pm/notice', params).subscribe((data: any) => {
             this.loading = false;
             this.total = data.totalCount || 0;
             this.list = data.data || [];
+
         }, (err: any) => {
             this.showErr();
             console.log(err);
@@ -156,6 +169,7 @@ export class NoticeComponent implements OnInit {
                 .subscribe((data: any) => {
                     this.isConfirmLoading = false;
                     this.isVisible = false;
+                    this.initSearch();
                     this.load();
                 }, (err: any) => {
                     this.isConfirmLoading = false;
@@ -163,10 +177,16 @@ export class NoticeComponent implements OnInit {
                     console.log(err);
                 });
         } else if (this.dialogStatus === 'edit') {
-            this.http.put('/pm/notice', Object.assign({}, this.valForm.value, {status: (isRelease ? 1 : 0)}))
+            const newNotice = Object.assign({}, this.curNotice);
+            if (isRelease) {
+                newNotice.status = 1;
+                newNotice.publishDate = Date.now();
+            }
+            this.http.put('/pm/notice', Object.assign(newNotice, this.valForm.value))
                 .subscribe((data: any) => {
                     this.isConfirmLoading = false;
                     this.isVisible = false;
+                    this.initSearch();
                     this.load();
                 }, (err: any) => {
                     this.isConfirmLoading = false;
@@ -178,6 +198,19 @@ export class NoticeComponent implements OnInit {
 
     handleCancel(e) {
         this.isVisible = false;
+    }
+
+    releaseData(notice: Notice) {
+        const newNotice = Object.assign({}, notice);
+        newNotice.status = 1;
+        newNotice.publishDate = Date.now();
+        this.http.put('/pm/notice', newNotice)
+            .subscribe((data: any) => {
+                this.load();
+            }, (err: any) => {
+                this.showErr();
+                console.log(err);
+            });
     }
 
     deleteData(notice: Notice) {
@@ -193,6 +226,40 @@ export class NoticeComponent implements OnInit {
                 console.log(err);
             });
     }
+
+    // ------------begin
+    get typeOptions() {
+        if (this.newTypeOption) {
+            return [this.newTypeOption, ...this.typeSearchOptions];
+        } else {
+            return this.typeSearchOptions;
+        }
+    }
+
+    typeChange($event) {
+        if (!$event) {
+            this.newTypeOption = null;
+            return;
+        }
+        if ($event && this.typeSearchOptions.findIndex(e => e === $event) === -1) {
+            this.newTypeOption = $event;
+        }
+    }
+
+    typeModelChange() {
+        if (this.newTypeOption && this.newTypeOption.value) {
+            this.typeSearchOptions.push(this.newTypeOption);
+            setTimeout(() => {
+                this.valForm.patchValue({
+                    type: this.typeSearchOptions[this.typeSearchOptions.length - 1]
+                });
+            }, 100);
+            this.newTypeOption = null;
+        }
+    }
+
+
+    // ------------end
 
     getFormControl(name) {
         return this.valForm.controls[name];

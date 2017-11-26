@@ -2,12 +2,12 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { SharedModule } from '@shared/shared.module';
-import { HourseComponent} from './notice/notice.component';
-import { RoomStatusPipe } from './notice/notice-status.pipe';
+import { NoticeComponent} from './notice/notice.component';
+import { NoticeStatusPipe } from './notice/notice-status.pipe';
 import { NumFormatPipe } from './notice/num.pipe';
 
 const routes: Routes = [
-    { path: 'hourse', component: HourseComponent },
+    { path: 'notice', component: NoticeComponent },
     // { path: 'owner', component: OwnerComponent }
 ];
 
@@ -17,10 +17,10 @@ const routes: Routes = [
         RouterModule.forChild(routes)
     ],
     declarations: [
-        HourseComponent,
+        NoticeComponent,
         // OwnerComponent
 
-        RoomStatusPipe,
+        NoticeStatusPipe,
         NumFormatPipe
     ],
     exports: [
@@ -30,4 +30,4 @@ const routes: Routes = [
 
     ]
 })
-export class FixedAssetsModule { }
+export class CustomServiceModule { }

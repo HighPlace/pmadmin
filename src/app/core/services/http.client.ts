@@ -31,12 +31,22 @@ export class _HttpClient {
                 let _data = params[key];
                 // 将时间转化为：时间戳 (秒)
                 if (moment.isDate(_data)) {
-                    _data = moment(_data).unix();
+                    _data = moment(_data).unix() * 1000;
                 }
                 ret = ret.set(key, _data);
             }
         }
         return ret;
+    }
+
+    parseObject(obj: Object): Object {
+        Object.keys(obj).forEach(e => {
+            if (moment.isDate(obj[e])) {
+                obj[e] = moment(obj[e]).unix() * 1000;
+            }
+        })
+
+        return obj;
     }
 
     private begin() {
@@ -97,6 +107,8 @@ export class _HttpClient {
         // 登陆接口特殊处理
         if (url.includes('/oauth/token')) {
             body = this.parseParams(body);
+        }else {
+            body = this.parseObject(body);
         }
 
         this.begin();
@@ -123,6 +135,8 @@ export class _HttpClient {
      */
     put(url: string, body?: any, params?: any): Observable<any> {
         url = this.fullCgiPath(url);
+
+        body = this.parseObject(body);
 
         this.begin();
         return this.http

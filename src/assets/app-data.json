@@ -85,7 +85,7 @@
             "children": [
                 {
                     "text": "信息发布",
-                    "link": "/elements/dropdown",
+                    "link": "/customservice/notice",
                     "translate": "信息发布"
                 },
                 {

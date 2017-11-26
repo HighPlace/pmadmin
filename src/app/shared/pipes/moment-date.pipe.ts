@@ -21,7 +21,7 @@ export class MomentDatePipe implements PipeTransform {
         if (value) {
             return moment(value).format(formatString);
         } else {
-            return '';
+            return '无';
         }
     }
 }
