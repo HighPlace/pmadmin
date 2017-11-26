@@ -148,14 +148,17 @@
                         <td nz-td>{{data.publishDate}}</td>
                         <td nz-td>{{data.status | noticeStatus}}</td>
                         <td nz-td>
-                            <a (click)="openDetail(data)">详情</a>
+                            <a (click)="openDetail(data, true)">详情</a>
                             <span nz-table-divider></span>
                             <nz-popconfirm [nzTitle]="'确定要删除吗？'" [nzOkText]="'删除'" [nzCancelText]="'取消'"
                                            (nzOnConfirm)="deleteData(data)">
                                 <a nz-popconfirm>删除</a>
                             </nz-popconfirm>
                             <span nz-table-divider></span>
-                            <a (click)="openDetail(data, true)">编辑</a>
+                            <nz-popconfirm [nzTitle]="'确定要发布吗？'" [nzOkText]="'发布'" [nzCancelText]="'取消'"
+                                           (nzOnConfirm)="sendData(data)">
+                                <a nz-popconfirm>发布</a>
+                            </nz-popconfirm>
                         </td>
                     </tr>
                     </tbody>
@@ -235,7 +238,10 @@
             {{dialogStatus == 'view'?'关 闭':'取 消'}}
         </button>
         <button nz-button *ngIf="dialogStatus != 'view'" [disabled]="!valForm.valid" [nzType]="'primary'" [nzSize]="'large'" (click)="handleOk($event)" [nzLoading]="isConfirmLoading">
-            提 交
+            保 存
+        </button>
+        <button nz-button *ngIf="dialogStatus != 'view'" [disabled]="!valForm.valid" [nzType]="'primary'" [nzSize]="'large'" (click)="handleOk($event, true)" [nzLoading]="isConfirmLoading">
+            立即发布
         </button>
     </ng-template>
 

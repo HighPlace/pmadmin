@@ -10,13 +10,13 @@ import {statusList, Notice} from './data-model';
     templateUrl: './notice.component.html'
 })
 export class NoticeComponent implements OnInit {
+    titleSearchOptions: any[] = [];
     typeSearchOptions: any[] = [];
-    filterStatusList: any[] = [];
     filter: any = {
         title: '',
         type: '',
-        publishDateFrom: '',
-        publishDateTo: '',
+        publishDateFrom: null,
+        publishDateTo: null,
         status: -1
     };
 
@@ -37,13 +37,12 @@ export class NoticeComponent implements OnInit {
                 private msg: NzMessageService,
                 private setting: SettingsService,
                 fb: FormBuilder) {
-        this.filterStatusList = [{value: -1, label: '全部'}].concat(statusList);
 
         this.valForm = fb.group({
-            title: [null, null],
+            title: [null, Validators.required],
             type: [null, Validators.required],
             content: [null, Validators.required],
-            validDate: [null, Validators.required]
+            validDate: [null, null]
         });
 
     }
@@ -53,7 +52,21 @@ export class NoticeComponent implements OnInit {
     }
 
     titleSearchChange(value) {
+        this.http.get('/pm/notice/title', {input: value}).subscribe((data: any) => {
+            this.titleSearchOptions = data.data || [];
+        }, (err: any) => {
+            this.showErr();
+            console.log(err);
+        });
+    }
 
+    typeSearchChange(value) {
+        this.http.get('/pm/notice/type', {input: value}).subscribe((data: any) => {
+            this.typeSearchOptions = data.data || [];
+        }, (err: any) => {
+            this.showErr();
+            console.log(err);
+        });
     }
 
     load(reset?: boolean) {
@@ -69,23 +82,20 @@ export class NoticeComponent implements OnInit {
             sortType: 'desc'
         };
 
-        if (this.filter.zone) {
-            params.zoneId = this.filter.zone;
+        if (this.filter.title) {
+            params.title = this.filter.title;
         }
-        if (this.filter.building) {
-            params.buildingId = this.filter.building;
+        if (this.filter.type) {
+            params.type = this.filter.type;
         }
-        if (this.filter.unit) {
-            params.unitId = this.filter.unit;
+        if (this.filter.publishDateFrom) {
+            params.publishDateFrom = this.filter.publishDateFrom;
         }
-        if (this.filter.room) {
-            params.roomId = this.filter.room;
-        }
-        if (this.filter.status >= 0) {
-            params.status = this.filter.status;
+        if (this.filter.publishDateTo) {
+            params.publishDateTo = this.filter.publishDateTo;
         }
 
-        this.http.get('/pm/property', params).subscribe((data: any) => {
+        this.http.get('/pm/notice', params).subscribe((data: any) => {
             this.loading = false;
             this.total = data.totalCount || 0;
             this.list = data.data || [];
@@ -102,7 +112,7 @@ export class NoticeComponent implements OnInit {
             this.dialogStatus = 'edit';
             this.maskClosable = false;
             this.curNotice = Object.assign({}, data);
-        } else if (data.propertyId) {
+        } else if (data.noticeId) {
             this.dialogStatus = 'view';
             this.maskClosable = true;
             this.curNotice = Object.assign({}, data);
@@ -115,11 +125,11 @@ export class NoticeComponent implements OnInit {
         this.isVisible = true;
     }
 
-    handleOk(e) {
+    handleOk(e, isRelease) {
         this.isConfirmLoading = true;
 
         if (this.dialogStatus === 'add') {
-            this.http.post('/pm/property', this.valForm.value)
+            this.http.post('/pm/notice', Object.assign(new Notice(), this.valForm.value, {status: 0}))
                 .subscribe((data: any) => {
                     this.isConfirmLoading = false;
                     this.isVisible = false;
@@ -130,7 +140,7 @@ export class NoticeComponent implements OnInit {
                     console.log(err);
                 });
         } else if (this.dialogStatus === 'edit') {
-            this.http.put('/pm/property', Object.assign({}, this.valForm.value, {propertyId: this.curNotice.propertyId}))
+            this.http.put('/pm/notice', Object.assign({}, this.valForm.value, {status: (isRelease ? 1 : 0)}))
                 .subscribe((data: any) => {
                     this.isConfirmLoading = false;
                     this.isVisible = false;
@@ -148,7 +158,7 @@ export class NoticeComponent implements OnInit {
     }
 
     deleteData(notice: Notice) {
-        this.http.delete('/pm/property', {propertyId: notice.propertyId})
+        this.http.delete('/pm/notice', {noticeId: notice.noticeId})
             .subscribe((data: any) => {
                 this.load();
             }, (err: any) => {

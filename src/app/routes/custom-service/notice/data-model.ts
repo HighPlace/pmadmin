@@ -12,8 +12,8 @@ export class Notice {
     type = '';
     status = 0;
     content = '';
-    publishDate = '';
-    validDate = '';
+    publishDate = Date.now();
+    validDate = null;
     publisher = '';
     approver = '';
     attachmentName = '';
