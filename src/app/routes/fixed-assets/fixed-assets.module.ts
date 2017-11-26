@@ -5,10 +5,11 @@ import { SharedModule } from '@shared/shared.module';
 import { HourseComponent} from './hourse/hourse.component';
 import { RoomStatusPipe } from './hourse/room-status.pipe';
 import { NumFormatPipe } from './hourse/num.pipe';
+import { DepartmentComponent } from './department/department.component';
 
 const routes: Routes = [
     { path: 'hourse', component: HourseComponent },
-    // { path: 'owner', component: OwnerComponent }
+    { path: 'department', component: DepartmentComponent }
 ];
 
 @NgModule({
@@ -18,7 +19,7 @@ const routes: Routes = [
     ],
     declarations: [
         HourseComponent,
-        // OwnerComponent
+        DepartmentComponent,
 
         RoomStatusPipe,
         NumFormatPipe
