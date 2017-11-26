@@ -16,6 +16,7 @@ export class EmployeeComponent implements OnInit {
     statusList: any[] = [];
     identityTypeList: any[] = [];
     genderList: any[] = [];
+    sampleUrl = '';
     filter: any = {
         deptId: '',
         position: '',
@@ -86,6 +87,13 @@ export class EmployeeComponent implements OnInit {
         this.http.get('/pm/employee/position?input=')
             .subscribe((data: any) => {
                 this.positions = data.data || [];
+            }, (err: any) => {
+                this.showErr();
+                console.log(err);
+            });
+        this.http.get('/pm/aliyun/sampleUrl/employee')
+            .subscribe((data: any) => {
+                this.sampleUrl = data.fileUrl || [];
             }, (err: any) => {
                 this.showErr();
                 console.log(err);
