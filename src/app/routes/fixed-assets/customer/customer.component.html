@@ -132,8 +132,8 @@
             <ng-template #body>
                 <div class="mb-sm text-right">
                     <a href="{{sampleUrl}}">模板下载</a>&nbsp;&nbsp;
-                    <a >批量导入</a>&nbsp;&nbsp;
-                    <a >批量导出</a>
+                    <a>批量导入</a>&nbsp;&nbsp;
+                    <a>批量导出</a>
                 </div>
                 <nz-table #nzTable
                           [nzAjaxData]="list"
@@ -146,6 +146,7 @@
                           (nzPageSizeChange)="load(true)">
                     <thead nz-thead>
                     <tr>
+                        <th nz-th [nzExpand]="true"></th>
                         <th nz-th><span>客户姓名</span>
                             <nz-table-sort [(nzValue)]="sortMap.customerName"
                                            (nzValueChange)="sort('customerName',$event)"></nz-table-sort>
@@ -165,24 +166,54 @@
                     </tr>
                     </thead>
                     <tbody nz-tbody>
-                    <tr nz-tbody-tr *ngFor="let data of nzTable.data">
-                        <td nz-td>{{data.customerName}}</td>
-                        <td nz-td>{{data.gender}}</td>
-                        <td nz-td>{{data.phone}}</td>
-                        <td nz-td>{{data.backupPhone1}}</td>
-                        <td nz-td>{{data.identityType | identityType}}</td>
-                        <td nz-td>{{data.identityNo}}</td>
-                        <td nz-td>
-                            <a (click)="openDetail(data)">详情</a>
-                            <span nz-table-divider></span>
-                            <nz-popconfirm [nzTitle]="'确定要删除吗？'" [nzOkText]="'删除'" [nzCancelText]="'取消'"
-                                           (nzOnConfirm)="deleteData(data)">
-                                <a nz-popconfirm>删除</a>
-                            </nz-popconfirm>
-                            <span nz-table-divider></span>
-                            <a (click)="openDetail(data, true)">编辑</a>
-                        </td>
-                    </tr>
+                    <ng-template ngFor let-data [ngForOf]="nzTable.data">
+                        <tr nz-tbody-tr>
+                            <!--<tr nz-tbody-tr *ngFor="let data of nzTable.data">-->
+                            <td nz-td [nzExpand]="true">
+                                <nz-row-expand-icon [(nzExpand)]="data.expand"></nz-row-expand-icon>
+                            </td>
+                            <td nz-td>{{data.customerName}}</td>
+                            <td nz-td>{{data.gender}}</td>
+                            <td nz-td>{{data.phone}}</td>
+                            <td nz-td>{{data.backupPhone1}}</td>
+                            <td nz-td>{{data.identityType | identityType}}</td>
+                            <td nz-td>{{data.identityNo}}</td>
+                            <td nz-td>
+                                <a (click)="openDetail(data)">详情</a>
+                                <span nz-table-divider></span>
+                                <nz-popconfirm [nzTitle]="'确定要删除吗？'" [nzOkText]="'删除'" [nzCancelText]="'取消'"
+                                               (nzOnConfirm)="deleteData(data)">
+                                    <a nz-popconfirm>删除</a>
+                                </nz-popconfirm>
+                                <span nz-table-divider></span>
+                                <a (click)="openDetail(data, true)">编辑</a>
+                            </td>
+                        </tr>
+                        <tr nz-tbody-tr *ngIf="data.expand">
+                            <td nz-td></td>
+                            <td nz-td colspan="6">
+                                <table>
+                                <ng-template ngFor let-relation [ngForOf]="data.relationList">
+                                <tr nz-tbody-tr>
+                                    <td nz-td >客户类型: {{relation.type | relationType }}</td>
+                                    <td nz-td >房产: {{relation.propertyName}}</td>
+                                    <td nz-td >
+                                      <table>
+                                          <ng-template ngFor let-car [ngForOf]="relation.carList">
+                                              <tr nz-tbody-tr>
+                                                  <td nz-td>车牌号: {{car.plateNo}}</td>
+                                                  <td nz-td>产权类型: {{car.type | carType}}</td>
+                                              </tr>
+                                          </ng-template>
+                                      </table>
+                                    </td>
+                                </tr>
+                                </ng-template>
+                                </table>
+
+                            </td>
+                        </tr>
+                    </ng-template>
                     </tbody>
                 </nz-table>
             </ng-template>
