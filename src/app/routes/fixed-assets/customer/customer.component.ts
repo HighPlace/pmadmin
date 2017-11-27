@@ -3,43 +3,48 @@ import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import {NzMessageService, NzNotificationService, NzModalService} from 'ng-zorro-antd';
 import {_HttpClient} from '@core/services/http.client';
 import {SettingsService} from '@core/services/settings.service';
-import {propertyStatusList, propertyTypeList, areaUnitList, Hourse} from './data-model';
+import {
+    identityTypeList, genderList, relationTypeList, carTypeList, chargeStatusList, Customer, Relation,
+    Car, propertyStatusList
+} from './data-model';
 
 @Component({
-    selector: 'app-hourse',
-    templateUrl: './hourse.component.html'
+    selector: 'app-customer',
+    templateUrl: './customer.component.html'
 })
-export class HourseComponent implements OnInit {
+
+export class CustomerComponent implements OnInit {
     zones: any[] = [];
     buildings: any[] = [];
     units: string[] = [];
     filterStatusList: any[] = [];
     statusList: any[] = [];
-    propertyTypeList: any[] = [];
-    areaUnitList: any[] = [];
+    identityTypeList: any[] = [];
+    genderList: any[] = [];
     sampleUrl = '';
     filter: any = {
         zone: '',
         building: '',
         unit: '',
         room: '',
-        status: -1
+        status: -1,
+        customerName: '',
+        phone: '',
+        plateNo: ''
     };
 
-    list: Hourse[] = [];
+    list: Customer[] = [];
     loading = false;
     total = 0;
     pageIndex = 1;
     pageSize = 10;
-    sortField = 'zoneId';
+    sortField = 'customerId';
     sortType = 'asc';
     sortMap = {
-        zoneId   : 'ascend',
-        buildingId : null,
-        unitId : null,
-        roomId : null,
-        propertyArea : null,
-        floorArea : null
+        customerId   : 'ascend',
+        customerName : null,
+        phone : null,
+        identityNo : null
     };
 
     valForm: FormGroup;
@@ -47,7 +52,7 @@ export class HourseComponent implements OnInit {
     isConfirmLoading = false;
     maskClosable = false;
     dialogStatus = 'view'; // edit add
-    curHourse = new Hourse();
+    curCustomer = new Customer();
 
     constructor(private http: _HttpClient,
                 private msg: NzMessageService,
@@ -55,20 +60,17 @@ export class HourseComponent implements OnInit {
                 fb: FormBuilder) {
         this.filterStatusList = [{value: -1, label: '全部'}].concat(propertyStatusList);
         this.statusList = propertyStatusList;
-        this.propertyTypeList = propertyTypeList;
-        this.areaUnitList = areaUnitList;
+        this.identityTypeList = identityTypeList;
+        this.genderList = genderList;
 
         this.valForm = fb.group({
-            zoneId: [null, null],
-            buildingId: [null, Validators.required],
-            unitId: [null, null],
-            roomId: [null, Validators.required],
-            houseType: [null, null],
-            propertyType: [0, Validators.required],
-            propertyArea: [null, Validators.required],
-            floorArea: [null, null],
-            areaUnit: [0, Validators.required],
-            status: [0, Validators.required]
+            customerName: [null, Validators.required],
+            identityType: [null, null],
+            identityNo: [null, Validators.required],
+            phone: [null, Validators.required],
+            email: [null, null],
+            gender: [null, null],
+            backupPhone1: [null, null]
         });
 
     }
@@ -93,7 +95,7 @@ export class HourseComponent implements OnInit {
                 this.showErr();
                 console.log(err);
             });
-        this.http.get('/pm/aliyun/sampleUrl/property')
+        this.http.get('/pm/aliyun/sampleUrl/customer')
             .subscribe((data: any) => {
                 this.sampleUrl = data.fileUrl || [];
             }, (err: any) => {
@@ -130,8 +132,17 @@ export class HourseComponent implements OnInit {
         if (this.filter.status >= 0) {
             params.status = this.filter.status;
         }
+        if (this.filter.customerName) {
+            params.customerName = this.filter.customerName;
+        }
+        if (this.filter.phone) {
+            params.phone = this.filter.phone;
+        }
+        if (this.filter.plateNo) {
+            params.plateNo = this.filter.plateNo;
+        }
 
-        this.http.get('/pm/property', params).subscribe((data: any) => {
+        this.http.get('/pm/customer', params).subscribe((data: any) => {
             this.loading = false;
             this.total = data.totalCount || 0;
             this.list = data.data || [];
@@ -176,23 +187,23 @@ export class HourseComponent implements OnInit {
         }
     }
 
-    openDetail(data: Hourse, isEdit: boolean) {
-        this.curHourse = new Hourse();
+    openDetail(data: Customer, isEdit: boolean) {
+        this.curCustomer = new Customer();
 
         if (isEdit) {
             this.dialogStatus = 'edit';
             this.maskClosable = false;
-            this.curHourse = Object.assign({}, data);
-        } else if (data.propertyId) {
+            this.curCustomer = Object.assign({}, data);
+        } else if (data.customerId) {
             this.dialogStatus = 'view';
             this.maskClosable = true;
-            this.curHourse = Object.assign({}, data);
+            this.curCustomer = Object.assign({}, data);
         } else {
             this.dialogStatus = 'add';
             this.maskClosable = false;
         }
 
-        this.valForm.reset(this.curHourse);
+        this.valForm.reset(this.curCustomer);
         this.isVisible = true;
     }
 
@@ -200,7 +211,7 @@ export class HourseComponent implements OnInit {
         this.isConfirmLoading = true;
 
         if (this.dialogStatus === 'add') {
-            this.http.post('/pm/property', this.valForm.value)
+            this.http.post('/pm/customer', this.valForm.value)
                 .subscribe((data: any) => {
                     this.isConfirmLoading = false;
                     this.isVisible = false;
@@ -212,7 +223,7 @@ export class HourseComponent implements OnInit {
                     console.log(err);
                 });
         } else if (this.dialogStatus === 'edit') {
-            this.http.put('/pm/property', Object.assign({}, this.valForm.value, {propertyId: this.curHourse.propertyId}))
+            this.http.put('/pm/customer', Object.assign({}, this.valForm.value, {customerId: this.curCustomer.customerId}))
                 .subscribe((data: any) => {
                     this.isConfirmLoading = false;
                     this.isVisible = false;
@@ -230,8 +241,8 @@ export class HourseComponent implements OnInit {
         this.isVisible = false;
     }
 
-    deleteData(hourse: Hourse) {
-        this.http.delete('/pm/property', {propertyId: hourse.propertyId})
+    deleteData(customer: Customer) {
+        this.http.delete('/pm/customer', {customerId: customer.customerId})
             .subscribe((data: any) => {
                 this.getFilter();
                 this.load();
