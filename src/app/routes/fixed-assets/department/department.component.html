@@ -94,8 +94,8 @@
                             <td nz-td>{{data.deptCode}}</td>
                             <td nz-td>{{data.aliasName}}</td>
                             <td nz-td>
-                                <a (click)="openDetail(data)">详情</a>
-                                <span nz-table-divider></span>
+                                <!--<a (click)="openDetail(data)">详情</a>
+                                <span nz-table-divider></span>-->
                                 <nz-popconfirm [nzTitle]="'确定要删除吗？'" [nzOkText]="'删除'" [nzCancelText]="'取消'"
                                                (nzOnConfirm)="deleteData(data)">
                                     <a nz-popconfirm>删除</a>
