@@ -1,16 +1,16 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {propertyStatusList} from './data-model';
+import {carTypeList} from './data-model';
 
 
-@Pipe({ name: 'roomStatus' })
-export class RoomStatusPipe implements PipeTransform {
+@Pipe({ name: 'carType' })
+export class CarTypePipe implements PipeTransform {
     transform(value: number): string {
         let label = '未知';
 
         if (value === -1) {
             label = '全部';
         }else {
-            propertyStatusList.forEach(e => {
+            carTypeList.forEach(e => {
                 if (e.value === value ) {
                     label = e.label;
                 }

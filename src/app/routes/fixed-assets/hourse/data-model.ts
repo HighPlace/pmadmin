@@ -1,4 +1,4 @@
-export const statusList = [{
+export const propertyStatusList = [{
     value: 0,
     label: '未知'
 }, {

@@ -24,7 +24,7 @@
                 },
                 {
                     "text": "客户档案管理",
-                    "link": "/elements/notification",
+                    "link": "/fixedassets/customer",
                     "translate": "客户档案管理"
                 }
             ]
@@ -38,12 +38,12 @@
             "children": [
                 {
                     "text": "组织架构管理",
-                    "link": "/elements/buttons",
+                    "link": "/fixedassets/department",
                     "translate": "组织架构管理"
                 },
                 {
                     "text": "员工档案管理",
-                    "link": "/elements/modal",
+                    "link": "/fixedassets/employee",
                     "translate": "员工档案管理"
                 }
             ]

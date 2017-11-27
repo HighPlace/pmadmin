@@ -3,42 +3,29 @@ import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import {NzMessageService, NzNotificationService, NzModalService} from 'ng-zorro-antd';
 import {_HttpClient} from '@core/services/http.client';
 import {SettingsService} from '@core/services/settings.service';
-import {propertyStatusList, propertyTypeList, areaUnitList, Hourse} from './data-model';
+import {statusList, Department} from './data-model';
 
 @Component({
-    selector: 'app-hourse',
-    templateUrl: './hourse.component.html'
+    selector: 'app-department',
+    templateUrl: './department.component.html'
 })
-export class HourseComponent implements OnInit {
-    zones: any[] = [];
-    buildings: any[] = [];
-    units: string[] = [];
-    filterStatusList: any[] = [];
-    statusList: any[] = [];
-    propertyTypeList: any[] = [];
-    areaUnitList: any[] = [];
-    sampleUrl = '';
+export class DepartmentComponent implements OnInit {
+    departments: any[] = [];
     filter: any = {
-        zone: '',
-        building: '',
-        unit: '',
-        room: '',
-        status: -1
+        superiorDeptId: ''
     };
 
-    list: Hourse[] = [];
+    list: Department[] = [];
     loading = false;
     total = 0;
     pageIndex = 1;
     pageSize = 10;
-    sortField = 'zoneId';
+    sortField = 'deptId';
     sortType = 'asc';
     sortMap = {
-        zoneId   : 'ascend',
-        buildingId : null,
-        unitId : null,
-        roomId : null,
-        propertyArea : null
+        deptId   : null,
+        level    : null,
+        deptCode : null
     };
 
     valForm: FormGroup;
@@ -46,28 +33,19 @@ export class HourseComponent implements OnInit {
     isConfirmLoading = false;
     maskClosable = false;
     dialogStatus = 'view'; // edit add
-    curHourse = new Hourse();
+    curDepartment = new Department();
 
     constructor(private http: _HttpClient,
                 private msg: NzMessageService,
                 private setting: SettingsService,
                 fb: FormBuilder) {
-        this.filterStatusList = [{value: -1, label: '全部'}].concat(propertyStatusList);
-        this.statusList = propertyStatusList;
-        this.propertyTypeList = propertyTypeList;
-        this.areaUnitList = areaUnitList;
 
         this.valForm = fb.group({
-            zoneId: [null, null],
-            buildingId: [null, Validators.required],
-            unitId: [null, null],
-            roomId: [null, Validators.required],
-            houseType: [null, null],
-            propertyType: [0, Validators.required],
-            propertyArea: [null, Validators.required],
-            floorArea: [null, null],
-            areaUnit: [0, Validators.required],
-            status: [0, Validators.required]
+            deptName: [null, Validators.required],
+            superiorDeptId: [null, null],
+            deptCode: [null, null],
+            aliasName: [null, null],
+            deptDesc: [null, null]
         });
 
     }
@@ -78,23 +56,9 @@ export class HourseComponent implements OnInit {
     }
 
     getFilter() {
-        this.http.get('/pm/property/catalog')
+        this.http.get('/pm/department/catalog')
             .subscribe((data: any) => {
-                this.zones = data.zoneIdList || [];
-
-                if (this.filter.zone) {
-                    this.setBuildings(this.filter.zone);
-                }
-                if (this.filter.building) {
-                    this.setUnits(this.filter.building);
-                }
-            }, (err: any) => {
-                this.showErr();
-                console.log(err);
-            });
-        this.http.get('/pm/aliyun/sampleUrl/property')
-            .subscribe((data: any) => {
-                this.sampleUrl = data.fileUrl || [];
+                this.departments = data.data || [];
             }, (err: any) => {
                 this.showErr();
                 console.log(err);
@@ -114,23 +78,11 @@ export class HourseComponent implements OnInit {
             sortType: this.sortType
         };
 
-        if (this.filter.zone) {
-            params.zoneId = this.filter.zone;
-        }
-        if (this.filter.building) {
-            params.buildingId = this.filter.building;
-        }
-        if (this.filter.unit) {
-            params.unitId = this.filter.unit;
-        }
-        if (this.filter.room) {
-            params.roomId = this.filter.room;
-        }
-        if (this.filter.status >= 0) {
-            params.status = this.filter.status;
+        if (this.filter.superiorDeptId) {
+            params.superiorDeptId = this.filter.superiorDeptId;
         }
 
-        this.http.get('/pm/property', params).subscribe((data: any) => {
+        this.http.get('/pm/department', params).subscribe((data: any) => {
             this.loading = false;
             this.total = data.totalCount || 0;
             this.list = data.data || [];
@@ -157,41 +109,23 @@ export class HourseComponent implements OnInit {
         this.load(true);
     }
 
-    setBuildings(zoneId: string) {
-        for (let i = 0; i < this.zones.length; i++) {
-            if (this.zones[i].zoneId === zoneId) {
-                this.buildings = this.zones[i].buildingIdList;
-                break;
-            }
-        }
-    }
-
-    setUnits(buildingId: string) {
-        for (let i = 0; i < this.buildings.length; i++) {
-            if (this.buildings[i].buildingId === buildingId) {
-                this.units = this.buildings[i].unitIdList;
-                break;
-            }
-        }
-    }
-
-    openDetail(data: Hourse, isEdit: boolean) {
-        this.curHourse = new Hourse();
+    openDetail(data: Department, isEdit: boolean) {
+        this.curDepartment = new Department();
 
         if (isEdit) {
             this.dialogStatus = 'edit';
             this.maskClosable = false;
-            this.curHourse = Object.assign({}, data);
-        } else if (data.propertyId) {
+            this.curDepartment = Object.assign({}, data);
+        } else if (data.deptId) {
             this.dialogStatus = 'view';
             this.maskClosable = true;
-            this.curHourse = Object.assign({}, data);
+            this.curDepartment = Object.assign({}, data);
         } else {
             this.dialogStatus = 'add';
             this.maskClosable = false;
         }
 
-        this.valForm.reset(this.curHourse);
+        this.valForm.reset(this.curDepartment);
         this.isVisible = true;
     }
 
@@ -199,7 +133,7 @@ export class HourseComponent implements OnInit {
         this.isConfirmLoading = true;
 
         if (this.dialogStatus === 'add') {
-            this.http.post('/pm/property', this.valForm.value)
+            this.http.post('/pm/department', this.valForm.value)
                 .subscribe((data: any) => {
                     this.isConfirmLoading = false;
                     this.isVisible = false;
@@ -211,7 +145,7 @@ export class HourseComponent implements OnInit {
                     console.log(err);
                 });
         } else if (this.dialogStatus === 'edit') {
-            this.http.put('/pm/property', Object.assign({}, this.valForm.value, {propertyId: this.curHourse.propertyId}))
+            this.http.put('/pm/department', Object.assign({}, this.valForm.value, {deptId: this.curDepartment.deptId}))
                 .subscribe((data: any) => {
                     this.isConfirmLoading = false;
                     this.isVisible = false;
@@ -229,8 +163,8 @@ export class HourseComponent implements OnInit {
         this.isVisible = false;
     }
 
-    deleteData(hourse: Hourse) {
-        this.http.delete('/pm/property', {propertyId: hourse.propertyId})
+    deleteData(department: Department) {
+        this.http.delete('/pm/department', {deptId: department.deptId})
             .subscribe((data: any) => {
                 this.getFilter();
                 this.load();

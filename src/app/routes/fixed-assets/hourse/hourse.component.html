@@ -110,18 +110,11 @@
     <div nz-col [nzMd]="24">
         <nz-card>
             <ng-template #body>
-                <!--<div class="mb-sm text-right">-->
-                <!--<nz-dropdown>-->
-                <!--<button nz-button nz-dropdown>-->
-                <!--<span>Export</span> <i class="anticon anticon-down"></i>-->
-                <!--</button>-->
-                <!--<ul nz-menu>-->
-                <!--<li nz-menu-item>Excel</li>-->
-                <!--<li nz-menu-item>JSON</li>-->
-                <!--<li nz-menu-item>PNG</li>-->
-                <!--</ul>-->
-                <!--</nz-dropdown>-->
-                <!--</div>-->
+                <div class="mb-sm text-right">
+                    <a href="{{sampleUrl}}">模板下载</a>&nbsp;&nbsp;
+                    <a >批量导入</a>&nbsp;&nbsp;
+                    <a >批量导出</a>
+                </div>
                 <nz-table #nzTable
                           [nzAjaxData]="list"
                           [nzShowSizeChanger]="true"
@@ -133,11 +126,11 @@
                           (nzPageSizeChange)="load(true)">
                     <thead nz-thead>
                     <tr>
-                        <th nz-th><span>分区</span></th>
-                        <th nz-th><span>楼宇</span></th>
-                        <th nz-th><span>单元</span></th>
-                        <th nz-th><span>房号</span></th>
-                        <th nz-th><span>套内/产权面积</span></th>
+                        <th nz-th><span>分区</span><nz-table-sort [(nzValue)]="sortMap.zoneId" (nzValueChange)="sort('zoneId',$event)"></nz-table-sort></th>
+                        <th nz-th><span>楼宇</span><nz-table-sort [(nzValue)]="sortMap.buildingId" (nzValueChange)="sort('buildingId',$event)"></nz-table-sort></th>
+                        <th nz-th><span>单元</span><nz-table-sort [(nzValue)]="sortMap.unitId" (nzValueChange)="sort('unitId',$event)"></nz-table-sort></th>
+                        <th nz-th><span>房号</span><nz-table-sort [(nzValue)]="sortMap.roomId" (nzValueChange)="sort('roomId',$event)"></nz-table-sort></th>
+                        <th nz-th><span>套内/产权面积</span><nz-table-sort [(nzValue)]="sortMap.propertyArea" (nzValueChange)="sort('propertyArea',$event)"></nz-table-sort></th>
                         <th nz-th><span>房屋状态</span></th>
                         <th nz-th><span>操作</span></th>
                     </tr>

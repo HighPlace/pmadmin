@@ -3,42 +3,41 @@ import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import {NzMessageService, NzNotificationService, NzModalService} from 'ng-zorro-antd';
 import {_HttpClient} from '@core/services/http.client';
 import {SettingsService} from '@core/services/settings.service';
-import {propertyStatusList, propertyTypeList, areaUnitList, Hourse} from './data-model';
+import {statusList, identityTypeList, genderList, Employee} from './data-model';
 
 @Component({
-    selector: 'app-hourse',
-    templateUrl: './hourse.component.html'
+    selector: 'app-employee',
+    templateUrl: './employee.component.html'
 })
-export class HourseComponent implements OnInit {
-    zones: any[] = [];
-    buildings: any[] = [];
-    units: string[] = [];
+export class EmployeeComponent implements OnInit {
+    departments: any[] = [];
+    positions: any[] = [];
     filterStatusList: any[] = [];
     statusList: any[] = [];
-    propertyTypeList: any[] = [];
-    areaUnitList: any[] = [];
+    identityTypeList: any[] = [];
+    genderList: any[] = [];
     sampleUrl = '';
     filter: any = {
-        zone: '',
-        building: '',
-        unit: '',
-        room: '',
+        deptId: '',
+        position: '',
+        employeeName: '',
+        phone: '',
         status: -1
     };
 
-    list: Hourse[] = [];
+    list: Employee[] = [];
     loading = false;
     total = 0;
     pageIndex = 1;
     pageSize = 10;
-    sortField = 'zoneId';
+    sortField = 'employeeId';
     sortType = 'asc';
     sortMap = {
-        zoneId   : 'ascend',
-        buildingId : null,
-        unitId : null,
-        roomId : null,
-        propertyArea : null
+        employeeId : 'ascend',
+        position   : null,
+        employeeName    : null,
+        phone : null,
+        entryDate : null
     };
 
     valForm: FormGroup;
@@ -46,28 +45,37 @@ export class HourseComponent implements OnInit {
     isConfirmLoading = false;
     maskClosable = false;
     dialogStatus = 'view'; // edit add
-    curHourse = new Hourse();
+    curEmployee = new Employee();
 
     constructor(private http: _HttpClient,
                 private msg: NzMessageService,
                 private setting: SettingsService,
                 fb: FormBuilder) {
-        this.filterStatusList = [{value: -1, label: '全部'}].concat(propertyStatusList);
-        this.statusList = propertyStatusList;
-        this.propertyTypeList = propertyTypeList;
-        this.areaUnitList = areaUnitList;
+        this.filterStatusList = [{value: -1, label: '全部'}].concat(statusList);
+        this.statusList = statusList;
+        this.identityTypeList = identityTypeList;
+        this.genderList = genderList;
 
         this.valForm = fb.group({
-            zoneId: [null, null],
-            buildingId: [null, Validators.required],
-            unitId: [null, null],
-            roomId: [null, Validators.required],
-            houseType: [null, null],
-            propertyType: [0, Validators.required],
-            propertyArea: [null, Validators.required],
-            floorArea: [null, null],
-            areaUnit: [0, Validators.required],
-            status: [0, Validators.required]
+            deptId: [null, Validators.required],
+            employeeName: [null, Validators.required],
+            phone: [null, Validators.required],
+            employeeCode: [null, null],
+            position: [null, null],
+            status: [0, null],
+            aliasName: [null, null],
+            identityType: [0, null],
+            identityNo: [null, null],
+            identPic: [null, null],
+            email: [null, null],
+            wechat: [null, null],
+            backupPhone1: [null, null],
+            backupPhone2: [null, null],
+            emergencyContactName: [null, null],
+            emergencyContactPhone: [null, null],
+            gender: [null, null],
+            entryDate: [null, null],
+            leaveDate: [null, null]
         });
 
     }
@@ -78,21 +86,21 @@ export class HourseComponent implements OnInit {
     }
 
     getFilter() {
-        this.http.get('/pm/property/catalog')
+        this.http.get('/pm/department/catalog')
             .subscribe((data: any) => {
-                this.zones = data.zoneIdList || [];
-
-                if (this.filter.zone) {
-                    this.setBuildings(this.filter.zone);
-                }
-                if (this.filter.building) {
-                    this.setUnits(this.filter.building);
-                }
+                this.departments = data.data || [];
             }, (err: any) => {
                 this.showErr();
                 console.log(err);
             });
-        this.http.get('/pm/aliyun/sampleUrl/property')
+        this.http.get('/pm/employee/position?input=')
+            .subscribe((data: any) => {
+                this.positions = data.data || [];
+            }, (err: any) => {
+                this.showErr();
+                console.log(err);
+            });
+        this.http.get('/pm/aliyun/sampleUrl/employee')
             .subscribe((data: any) => {
                 this.sampleUrl = data.fileUrl || [];
             }, (err: any) => {
@@ -114,23 +122,23 @@ export class HourseComponent implements OnInit {
             sortType: this.sortType
         };
 
-        if (this.filter.zone) {
-            params.zoneId = this.filter.zone;
+        if (this.filter.deptId) {
+            params.deptId = this.filter.deptId;
         }
-        if (this.filter.building) {
-            params.buildingId = this.filter.building;
+        if (this.filter.position) {
+            params.position = this.filter.position;
         }
-        if (this.filter.unit) {
-            params.unitId = this.filter.unit;
+        if (this.filter.employeeName) {
+            params.employeeName = this.filter.employeeName;
         }
-        if (this.filter.room) {
-            params.roomId = this.filter.room;
+        if (this.filter.phone) {
+            params.phone = this.filter.phone;
         }
         if (this.filter.status >= 0) {
             params.status = this.filter.status;
         }
 
-        this.http.get('/pm/property', params).subscribe((data: any) => {
+        this.http.get('/pm/employee', params).subscribe((data: any) => {
             this.loading = false;
             this.total = data.totalCount || 0;
             this.list = data.data || [];
@@ -157,41 +165,23 @@ export class HourseComponent implements OnInit {
         this.load(true);
     }
 
-    setBuildings(zoneId: string) {
-        for (let i = 0; i < this.zones.length; i++) {
-            if (this.zones[i].zoneId === zoneId) {
-                this.buildings = this.zones[i].buildingIdList;
-                break;
-            }
-        }
-    }
-
-    setUnits(buildingId: string) {
-        for (let i = 0; i < this.buildings.length; i++) {
-            if (this.buildings[i].buildingId === buildingId) {
-                this.units = this.buildings[i].unitIdList;
-                break;
-            }
-        }
-    }
-
-    openDetail(data: Hourse, isEdit: boolean) {
-        this.curHourse = new Hourse();
+    openDetail(data: Employee, isEdit: boolean) {
+        this.curEmployee = new Employee();
 
         if (isEdit) {
             this.dialogStatus = 'edit';
             this.maskClosable = false;
-            this.curHourse = Object.assign({}, data);
-        } else if (data.propertyId) {
+            this.curEmployee = Object.assign({}, data);
+        } else if (data.employeeId) {
             this.dialogStatus = 'view';
             this.maskClosable = true;
-            this.curHourse = Object.assign({}, data);
+            this.curEmployee = Object.assign({}, data);
         } else {
             this.dialogStatus = 'add';
             this.maskClosable = false;
         }
 
-        this.valForm.reset(this.curHourse);
+        this.valForm.reset(this.curEmployee);
         this.isVisible = true;
     }
 
@@ -199,7 +189,7 @@ export class HourseComponent implements OnInit {
         this.isConfirmLoading = true;
 
         if (this.dialogStatus === 'add') {
-            this.http.post('/pm/property', this.valForm.value)
+            this.http.post('/pm/employee', this.valForm.value)
                 .subscribe((data: any) => {
                     this.isConfirmLoading = false;
                     this.isVisible = false;
@@ -211,7 +201,7 @@ export class HourseComponent implements OnInit {
                     console.log(err);
                 });
         } else if (this.dialogStatus === 'edit') {
-            this.http.put('/pm/property', Object.assign({}, this.valForm.value, {propertyId: this.curHourse.propertyId}))
+            this.http.put('/pm/employee', Object.assign({}, this.valForm.value, {employeeId: this.curEmployee.employeeId}))
                 .subscribe((data: any) => {
                     this.isConfirmLoading = false;
                     this.isVisible = false;
@@ -229,8 +219,8 @@ export class HourseComponent implements OnInit {
         this.isVisible = false;
     }
 
-    deleteData(hourse: Hourse) {
-        this.http.delete('/pm/property', {propertyId: hourse.propertyId})
+    deleteData(employee: Employee) {
+        this.http.delete('/pm/employee', {employeeId: employee.employeeId})
             .subscribe((data: any) => {
                 this.getFilter();
                 this.load();
