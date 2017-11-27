@@ -37,6 +37,7 @@ export class DepartmentComponent implements OnInit {
             deptName: [null, Validators.required],
             superiorDeptId: [null, null],
             deptCode: [null, null],
+            aliasName: [null, null],
             deptDesc: [null, null]
         });
 
