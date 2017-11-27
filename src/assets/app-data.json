@@ -38,12 +38,12 @@
             "children": [
                 {
                     "text": "组织架构管理",
-                    "link": "/fixedassets/department",
+                    "link": "/orgstructure/department",
                     "translate": "组织架构管理"
                 },
                 {
                     "text": "员工档案管理",
-                    "link": "/fixedassets/employee",
+                    "link": "/orgstructure/employee",
                     "translate": "员工档案管理"
                 }
             ]

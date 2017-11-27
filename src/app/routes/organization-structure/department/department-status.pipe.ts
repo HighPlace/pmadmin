@@ -3,7 +3,7 @@ import { statusList } from './data-model';
 
 
 @Pipe({ name: 'departmentStatus' })
-export class StatusPipe implements PipeTransform {
+export class DepartmentStatusPipe implements PipeTransform {
     transform(value: number): string {
         let label = '未知';
 
