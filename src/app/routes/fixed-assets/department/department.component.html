@@ -76,8 +76,8 @@
                     <tr>
                         <th nz-th [nzExpand]="true"></th>
                         <th nz-th><span>部门名称</span></th>
-                        <th nz-th><span>部门层级</span></th>
-                        <th nz-th><span>部门编码</span></th>
+                        <th nz-th><span>部门层级</span><nz-table-sort [(nzValue)]="sortMap.level" (nzValueChange)="sort('level',$event)"></nz-table-sort></th>
+                        <th nz-th><span>部门编码</span><nz-table-sort [(nzValue)]="sortMap.deptCode" (nzValueChange)="sort('deptCode',$event)"></nz-table-sort></th>
                         <th nz-th><span>部门简称</span></th>
                         <th nz-th><span>操作</span></th>
                     </tr>

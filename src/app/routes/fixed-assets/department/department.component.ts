@@ -20,6 +20,13 @@ export class DepartmentComponent implements OnInit {
     total = 0;
     pageIndex = 1;
     pageSize = 10;
+    sortField = 'deptId';
+    sortType = 'asc';
+    sortMap = {
+        deptId   : null,
+        level    : null,
+        deptCode : null
+    };
 
     valForm: FormGroup;
     isVisible = false;
@@ -67,8 +74,8 @@ export class DepartmentComponent implements OnInit {
         const params: any = {
             pageNum: this.pageIndex,
             pageSize: this.pageSize,
-            sortField: 'deptId',
-            sortType: 'asc'
+            sortField: this.sortField,
+            sortType: this.sortType
         };
 
         if (this.filter.superiorDeptId) {
@@ -83,6 +90,23 @@ export class DepartmentComponent implements OnInit {
             this.showErr();
             console.log(err);
         });
+    }
+
+    sort(sortName, value) {
+        this.sortField = sortName;
+        if (value  === 'ascend') {
+            this.sortType = 'asc';
+        } else {
+            this.sortType = 'desc';
+        }
+        Object.keys(this.sortMap).forEach(key => {
+            if (key !== sortName) {
+                this.sortMap[ key ] = null;
+            } else {
+                this.sortMap[ key ] = value;
+            }
+        });
+        this.load(true);
     }
 
     openDetail(data: Department, isEdit: boolean) {

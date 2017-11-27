@@ -25,13 +25,22 @@ export class HourseComponent implements OnInit {
         room: '',
         status: -1
     };
-    zoneInput = '';
 
     list: Hourse[] = [];
     loading = false;
     total = 0;
     pageIndex = 1;
     pageSize = 10;
+    sortField = 'zoneId';
+    sortType = 'asc';
+    sortMap = {
+        zoneId   : 'ascend',
+        buildingId : null,
+        unitId : null,
+        roomId : null,
+        propertyArea : null,
+        floorArea : null
+    };
 
     valForm: FormGroup;
     isVisible = false;
@@ -102,8 +111,8 @@ export class HourseComponent implements OnInit {
         const params: any = {
             pageNum: this.pageIndex,
             pageSize: this.pageSize,
-            sortField: 'zoneId',
-            sortType: 'asc'
+            sortField: this.sortField,
+            sortType: this.sortType
         };
 
         if (this.filter.zone) {
@@ -130,6 +139,23 @@ export class HourseComponent implements OnInit {
             this.showErr();
             console.log(err);
         });
+    }
+
+    sort(sortName, value) {
+        this.sortField = sortName;
+        if (value  === 'ascend') {
+            this.sortType = 'asc';
+        } else {
+            this.sortType = 'desc';
+        }
+        Object.keys(this.sortMap).forEach(key => {
+            if (key !== sortName) {
+                this.sortMap[ key ] = null;
+            } else {
+                this.sortMap[ key ] = value;
+            }
+        });
+        this.load(true);
     }
 
     setBuildings(zoneId: string) {

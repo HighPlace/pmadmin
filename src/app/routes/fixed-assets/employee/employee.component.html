@@ -113,11 +113,11 @@
                           (nzPageSizeChange)="load(true)">
                     <thead nz-thead>
                     <tr>
-                        <th nz-th><span>岗位</span></th>
-                        <th nz-th><span>姓名</span></th>
-                        <th nz-th><span>电话号码</span></th>
-                        <th nz-th><span>入职时间</span></th>
-						<th nz-th><span>在职状态</span></th>
+                        <th nz-th><span>岗位</span><nz-table-sort [(nzValue)]="sortMap.position" (nzValueChange)="sort('position',$event)"></nz-table-sort></th>
+                        <th nz-th><span>姓名</span><nz-table-sort [(nzValue)]="sortMap.employeeName" (nzValueChange)="sort('employeeName',$event)"></nz-table-sort></th>
+                        <th nz-th><span>电话号码</span><nz-table-sort [(nzValue)]="sortMap.phone" (nzValueChange)="sort('phone',$event)"></nz-table-sort></th>
+                        <th nz-th><span>入职时间</span><nz-table-sort [(nzValue)]="sortMap.entryDate" (nzValueChange)="sort('entryDate',$event)"></nz-table-sort></th>
+                        <th nz-th><span>在职状态</span></th>
                         <th nz-th><span>操作</span></th>
                     </tr>
                     </thead>

@@ -30,6 +30,15 @@ export class EmployeeComponent implements OnInit {
     total = 0;
     pageIndex = 1;
     pageSize = 10;
+    sortField = 'employeeId';
+    sortType = 'asc';
+    sortMap = {
+        employeeId : 'ascend',
+        position   : null,
+        employeeName    : null,
+        phone : null,
+        entryDate : null
+    };
 
     valForm: FormGroup;
     isVisible = false;
@@ -109,8 +118,8 @@ export class EmployeeComponent implements OnInit {
         const params: any = {
             pageNum: this.pageIndex,
             pageSize: this.pageSize,
-            sortField: 'employeeId',
-            sortType: 'asc'
+            sortField: this.sortField,
+            sortType: this.sortType
         };
 
         if (this.filter.deptId) {
@@ -137,6 +146,23 @@ export class EmployeeComponent implements OnInit {
             this.showErr();
             console.log(err);
         });
+    }
+
+    sort(sortName, value) {
+        this.sortField = sortName;
+        if (value  === 'ascend') {
+            this.sortType = 'asc';
+        } else {
+            this.sortType = 'desc';
+        }
+        Object.keys(this.sortMap).forEach(key => {
+            if (key !== sortName) {
+                this.sortMap[ key ] = null;
+            } else {
+                this.sortMap[ key ] = value;
+            }
+        });
+        this.load(true);
     }
 
     openDetail(data: Employee, isEdit: boolean) {
