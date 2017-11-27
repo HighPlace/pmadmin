@@ -198,6 +198,7 @@ export class NoticeComponent implements OnInit {
 
     handleCancel(e) {
         this.isVisible = false;
+        this.initSearch();
     }
 
     releaseData(notice: Notice) {
@@ -227,7 +228,7 @@ export class NoticeComponent implements OnInit {
             });
     }
 
-    // ------------begin
+    // ------------nzSelect 可选择可输入改造 begin
     get typeOptions() {
         if (this.newTypeOption) {
             return [this.newTypeOption, ...this.typeSearchOptions];
@@ -246,8 +247,8 @@ export class NoticeComponent implements OnInit {
         }
     }
 
-    typeModelChange() {
-        if (this.newTypeOption && this.newTypeOption.value) {
+    typeOpenChange(isOpen) {
+        if (this.newTypeOption && !isOpen) {
             this.typeSearchOptions.push(this.newTypeOption);
             setTimeout(() => {
                 this.valForm.patchValue({
@@ -257,8 +258,6 @@ export class NoticeComponent implements OnInit {
             this.newTypeOption = null;
         }
     }
-
-
     // ------------end
 
     getFormControl(name) {

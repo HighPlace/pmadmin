@@ -153,8 +153,8 @@
                                            (nzOnConfirm)="deleteData(data)">
                                 <a nz-popconfirm>删除</a>
                             </nz-popconfirm>
-                            <span nz-table-divider></span>
-                            <nz-popconfirm [nzTitle]="'确定要发布吗？'" [nzOkText]="'发布'" [nzCancelText]="'取消'"
+                            <span *ngIf="data.status === 0" nz-table-divider></span>
+                            <nz-popconfirm *ngIf="data.status === 0" [nzTitle]="'确定要发布吗？'" [nzOkText]="'发布'" [nzCancelText]="'取消'"
                                            (nzOnConfirm)="releaseData(data)">
                                 <a nz-popconfirm>发布</a>
                             </nz-popconfirm>
@@ -198,7 +198,7 @@
                         [nzFilter]="true"
                         formControlName="type"
                         (nzSearchChange)="typeChange($event)"
-                        (ngModelChange)="typeModelChange($event)"
+                        (nzOpenChange)="typeOpenChange($event)"
                         [nzNotFoundContent]="'无法找到'"
                         [nzShowSearch]="true"
                         [nzDisabled]="dialogStatus === 'view'">

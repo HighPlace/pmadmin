@@ -9,7 +9,7 @@ export const statusList = [{
 export class Notice {
     noticeId = 0;
     title = '';
-    type = '';
+    type = null;
     status = 0;
     content = '';
     publishDate = null;
