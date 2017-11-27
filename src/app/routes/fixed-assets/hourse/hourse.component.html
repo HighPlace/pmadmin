@@ -130,8 +130,7 @@
                         <th nz-th><span>楼宇</span><nz-table-sort [(nzValue)]="sortMap.buildingId" (nzValueChange)="sort('buildingId',$event)"></nz-table-sort></th>
                         <th nz-th><span>单元</span><nz-table-sort [(nzValue)]="sortMap.unitId" (nzValueChange)="sort('unitId',$event)"></nz-table-sort></th>
                         <th nz-th><span>房号</span><nz-table-sort [(nzValue)]="sortMap.roomId" (nzValueChange)="sort('roomId',$event)"></nz-table-sort></th>
-                        <th nz-th><span>产权面积</span><nz-table-sort [(nzValue)]="sortMap.propertyArea" (nzValueChange)="sort('propertyArea',$event)"></nz-table-sort></th>
-                        <th nz-th><span>套内面积</span><nz-table-sort [(nzValue)]="sortMap.floorArea" (nzValueChange)="sort('floorArea',$event)"></nz-table-sort></th>
+                        <th nz-th><span>套内/产权面积</span><nz-table-sort [(nzValue)]="sortMap.propertyArea" (nzValueChange)="sort('propertyArea',$event)"></nz-table-sort></th>
                         <th nz-th><span>房屋状态</span></th>
                         <th nz-th><span>操作</span></th>
                     </tr>
@@ -142,8 +141,7 @@
                         <td nz-td>{{data.buildingId}}</td>
                         <td nz-td>{{data.unitId}}</td>
                         <td nz-td>{{data.roomId}}</td>
-                        <td nz-td>{{data.propertyArea}}</td>
-                        <td nz-td>{{data.floorArea}}</td>
+                        <td nz-td>{{data.floorArea}}/{{data.propertyArea}}</td>
                         <td nz-td>{{data.status | roomStatus}}</td>
                         <td nz-td>
                             <a (click)="openDetail(data)">详情</a>

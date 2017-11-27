@@ -93,6 +93,7 @@ export class Customer {   //关系: Customer包含Relation列表, Relation包含
     createTime = Date.now();
     modifyTime = Date.now();
     remark = '';
+    relationList: Relation[] = [];
 }
 
 export class Relation {
@@ -107,6 +108,7 @@ export class Relation {
     createTime = Date.now();
     modifyTime = Date.now();
     remark = '';
+    carList: Car[] = [];
 }
 
 export class Car {

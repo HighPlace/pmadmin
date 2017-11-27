@@ -38,8 +38,7 @@ export class HourseComponent implements OnInit {
         buildingId : null,
         unitId : null,
         roomId : null,
-        propertyArea : null,
-        floorArea : null
+        propertyArea : null
     };
 
     valForm: FormGroup;
