@@ -126,7 +126,7 @@
                         <td nz-td>{{data.deptName}}-{{data.position}}</td>
                         <td nz-td>{{data.employeeName}}</td>
                         <td nz-td>{{data.phone}}</td>
-                        <td nz-td>{{data.entryDate}}</td>
+                        <td nz-td>{{data.entryDate | _date: 'YYYY-MM-DD'}}</td>
 						<td nz-td>{{data.status | employeeStatus}}</td>
                         <td nz-td>
                             <a (click)="openDetail(data)">详情</a>
