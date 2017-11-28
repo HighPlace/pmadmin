@@ -56,7 +56,7 @@ export class NoticeComponent implements OnInit {
     }
 
     initSearch() {
-        this.titleSearchChange('');
+        //this.titleSearchChange('');
         this.typeSearchChange('');
     }
 
@@ -165,7 +165,12 @@ export class NoticeComponent implements OnInit {
         this.isConfirmLoading = true;
 
         if (this.dialogStatus === 'add') {
-            this.http.post('/pm/notice', Object.assign(new Notice(), this.valForm.value, {status: 0}))
+            const newNotice = new Notice();
+            if (isRelease) {
+                newNotice.status = 1;
+                newNotice.publishDate = Date.now();
+            }
+            this.http.post('/pm/notice', Object.assign(newNotice, this.valForm.value))
                 .subscribe((data: any) => {
                     this.isConfirmLoading = false;
                     this.isVisible = false;
