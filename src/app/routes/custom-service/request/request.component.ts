@@ -4,6 +4,7 @@ import {NzMessageService, NzNotificationService, NzModalService} from 'ng-zorro-
 import {_HttpClient} from '@core/services/http.client';
 import {SettingsService} from '@core/services/settings.service';
 import {sourceList, statusList, priorityList, rateLevelList, Request} from './data-model';
+import * as moment from 'moment';
 
 @Component({
     selector: 'app-request',
@@ -67,12 +68,26 @@ export class RequestComponent implements OnInit {
             subType: [null, Validators.required],
             source: [null, Validators.required],
             content: [null, Validators.required],
+            status: [null, null],
             attachment1: [null, null],
             propertyId: [null, null],
             submitter: [null, null],
             contactInfo: [null, null],
             priority: [null, null],
-            startTime: [null, null]
+            startTime: [null, null],
+            assignTime: [null, null],
+            acceptTime: [null, null],
+            finishTime: [null, null],
+            rateTime: [null, null],
+            dealEmployeeId: [null, null],
+            dealDesc: [null, null],
+            dealFee: [null, null],
+            dealAttachment: [null, null],
+            rateLevel: [null, null],
+            rateNum: [null, null],
+            rateAttachment: [null, null],
+            rateUsername: [null, null],
+            rateDesc: [null, null]
         });
 
     }
@@ -127,24 +142,24 @@ export class RequestComponent implements OnInit {
             params.subType = this.filter.subType;
         }
 
-        if (this.filter.source) {
+        if (this.filter.source > 0) {
             params.source = this.filter.source;
         }
 
-        if (this.filter.status) {
+        if (this.filter.status > 0) {
             params.status = this.filter.status;
         }
 
-        if (this.filter.priority) {
+        if (this.filter.priority > 0) {
             params.priority = this.filter.priority;
         }
 
         if (this.filter.requestDateFrom) {
-            params.requestDateFrom = this.filter.requestDateFrom;
+            params.requestDateFrom = moment(this.filter.requestDateFrom).format('YYYY-MM-DD');
         }
 
         if (this.filter.requestDateTo) {
-            params.requestDateTo = this.filter.requestDateTo;
+            params.requestDateTo = moment(this.filter.requestDateTo).format('YYYY-MM-DD');
         }
 
         this.http.get('/pm/request', params).subscribe((data: any) => {

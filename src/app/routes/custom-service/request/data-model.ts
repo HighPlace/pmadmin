@@ -78,7 +78,7 @@ export class Request {
 	propertyId = 0;
 	submitter = '';
 	contactInfo = '';
-	priority = 0;
+	priority = 3;
 	startTime = '';
 	assignTime = '';
 	acceptTime = '';
@@ -88,7 +88,7 @@ export class Request {
 	dealDesc = '';
 	dealFee = 0;
 	dealAttachment = '';
-	rateLevel = 0;
+	rateLevel = 3;
 	rateNum = 0;
 	rateDesc = '';
 	rateAttachment	= '';

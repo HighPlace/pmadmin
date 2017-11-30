@@ -89,9 +89,9 @@
                     "translate": "信息发布"
                 },
                 {
-                    "text": "报事保修",
-                    "link": "/elements/grid",
-                    "translate": "报事保修"
+                    "text": "报事报修",
+                    "link": "/customservice/request",
+                    "translate": "报事报修"
                 }
             ]
         },

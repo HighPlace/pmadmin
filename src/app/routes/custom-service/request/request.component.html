@@ -20,7 +20,6 @@
     <ng-template #body>
         <form nz-form>
             <div nz-row nz-form-item [nzGutter]="0" class="mb0">
-
                 <div nz-form-label nz-col [nzSm]="2">
                     <label>服务大类</label>
                 </div>
@@ -59,10 +58,10 @@
 				<div nz-form-label nz-col [nzSm]="2">
                     <label>服务来源</label>
                 </div>
-                <div nz-form-control nz-col [nzSm]="3">
+                <div nz-form-control nz-col [nzSm]="2">
                     <nz-dropdown>
                         <a class="ant-dropdown-link" nz-dropdown>
-                            {{filter.source | source}} <i class="anticon anticon-down"></i>
+                            {{filter.source | requestSource}} <i class="anticon anticon-down"></i>
                         </a>
                         <ul nz-menu>
                             <li
@@ -76,10 +75,10 @@
 				<div nz-form-label nz-col [nzSm]="2">
                     <label>服务状态</label>
                 </div>
-                <div nz-form-control nz-col [nzSm]="3">
+                <div nz-form-control nz-col [nzSm]="2">
                     <nz-dropdown>
                         <a class="ant-dropdown-link" nz-dropdown>
-                            {{filter.status | status}} <i class="anticon anticon-down"></i>
+                            {{filter.status | requestStatus}} <i class="anticon anticon-down"></i>
                         </a>
                         <ul nz-menu>
                             <li
@@ -93,10 +92,10 @@
 				<div nz-form-label nz-col [nzSm]="2">
                     <label>服务优先级</label>
                 </div>
-                <div nz-form-control nz-col [nzSm]="3">
+                <div nz-form-control nz-col [nzSm]="2">
                     <nz-dropdown>
                         <a class="ant-dropdown-link" nz-dropdown>
-                            {{filter.priority | priority}} <i class="anticon anticon-down"></i>
+                            {{filter.priority | requestPriority}} <i class="anticon anticon-down"></i>
                         </a>
                         <ul nz-menu>
                             <li
@@ -107,20 +106,20 @@
                         </ul>
                     </nz-dropdown>
                 </div>
-				<div nz-form-label nz-col [nzSm]="1">
+            </div>
+            <div nz-row nz-form-item [nzGutter]="0" class="mb0">
+				<div nz-form-label nz-col [nzSm]="2">
                     <label>发起时间</label>
                 </div>
-                <div nz-form-control nz-col [nzSm]="2">
-                    <nz-datepicker (ngModelChange)="filter.requestDateFrom=$event;startValueChange()"
+                <div nz-form-control nz-col [nzSm]="6">
+                    <nz-datepicker style="width: 40%;" (ngModelChange)="filter.requestDateFrom=$event;startValueChange()"
                                    [ngModel]="filter.requestDateFrom"
                                    name="filter.requestDateFrom"
                                    [nzDisabledDate]="disabledStartDate"
                                    [nzFormat]="'YYYY-MM-DD'"
                                    [nzPlaceHolder]="'起始日期'"></nz-datepicker>
-                </div>
-				-
-				<div nz-form-control nz-col [nzSm]="2">
-                    <nz-datepicker (ngModelChange)="filter.requestDateTo=$event;endValueChange()"
+                    -
+                    <nz-datepicker style="width: 40%;" (ngModelChange)="filter.requestDateTo=$event;endValueChange()"
                                    [ngModel]="filter.requestDateTo"
                                    name="filter.requestDateTo"
                                    [nzDisabledDate]="disabledEndDate"
@@ -128,7 +127,7 @@
                                    [nzPlaceHolder]="'终止日期'"></nz-datepicker>
                 </div>
 
-                <div nz-col [nzSm]="4" [nzOffset]="0">
+                <div nz-col [nzSm]="4" [nzOffset]="12" align="right">
                     <button nz-button [nzType]="'primary'" (click)="load(true)" [nzLoading]="loading">查询</button>
                     <button nz-button (click)="openDetail({})" [disabled]="loading">新增</button>
                 </div>
@@ -168,18 +167,22 @@
                         <th nz-th><span>服务类型</span></th>
                         <th nz-th><span>来源</span></th>
                         <th nz-th><span>发起时间</span><nz-table-sort [(nzValue)]="sortMap.startTime" (nzValueChange)="sort('startTime',$event)"></nz-table-sort></th>
+                        <th nz-th><span>服务优先级</span></th>
                         <th nz-th><span>服务状态</span></th>
                         <th nz-th><span>操作</span></th>
                     </tr>
                     </thead>
                     <tbody nz-tbody>
+                    <ng-template ngFor let-data [ngForOf]="nzTable.data">
                     <tr nz-tbody-tr *ngFor="let data of nzTable.data">
+                        <tr nz-tbody-tr>
                         <td nz-td [nzExpand]="true">
                             <nz-row-expand-icon [(nzExpand)]="data.expand"></nz-row-expand-icon>
                         </td>
                         <td nz-td>{{data.type}}-{{data.subType}}</td>
                         <td nz-td>{{data.source | requestSource}}</td>
-                        <td nz-td>{{data.startTime}}</td>
+                        <td nz-td>{{data.startTime | _date }}</td>
+                        <td nz-td>{{data.priority | requestPriority}}</td>
                         <td nz-td>{{data.status | requestStatus}}</td>
                         <td nz-td>
                             <a (click)="openDetail(data)">详情</a>
@@ -199,6 +202,7 @@
                             {{data.content}}
                         </td>
                     </tr>
+                    </ng-template>
                     </tbody>
                 </nz-table>
             </ng-template>
@@ -224,11 +228,12 @@
                     <nz-select
                         [nzPlaceHolder]="'服务大类'"
                         formControlName="type"
-                        [nzDisabled]="dialogStatus === 'view'">
+                        [nzDisabled]="dialogStatus === 'view'"
+                        (ngModelChange)="setSubtypes($event)">
                         <nz-option
-                            *ngFor="let option of typeList"
-                            [nzLabel]="option.label"
-                            [nzValue]="option.value">
+                            *ngFor="let option of types"
+                            [nzLabel]="option.type"
+                            [nzValue]="option.type">
                         </nz-option>
                     </nz-select>
                 </div>
@@ -243,9 +248,9 @@
                         formControlName="subType"
                         [nzDisabled]="dialogStatus === 'view'">
                         <nz-option
-                            *ngFor="let option of subTypeList"
-                            [nzLabel]="option.label"
-                            [nzValue]="option.value">
+                            *ngFor="let option of subTypes"
+                            [nzLabel]="option"
+                            [nzValue]="option">
                         </nz-option>
                     </nz-select>
                 </div>
@@ -269,12 +274,12 @@
             </div>
 			<div nz-row nz-form-item>
                 <div nz-form-label nz-col [nzSpan]="7">
-                    <label>工单状态</label>
+                    <label>服务状态</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('status')">
                     <nz-select
-                        [nzPlaceHolder]="'工单状态'"
-                        formControlName="source"
+                        [nzPlaceHolder]="'服务状态'"
+                        formControlName="status"
                         [nzDisabled]="dialogStatus === 'view'">
                         <nz-option
                             *ngFor="let option of statusList"
@@ -338,8 +343,8 @@
                     <label>发起时间</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('startTime')">
-                    <nz-input formControlName="startTime" [nzPlaceHolder]="'发起时间'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
-                    </nz-input>
+                    <nz-datepicker formControlName="startTime" [nzShowTime]="true" [nzPlaceHolder]="'发起时间'" [nzFormat]="'YYYY-MM-DD HH:mm:ss'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-datepicker>
                 </div>
             </div>
 			<div nz-row nz-form-item>
@@ -347,8 +352,8 @@
                     <label>指派时间</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('assignTime')">
-                    <nz-input formControlName="assignTime" [nzPlaceHolder]="'指派时间'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
-                    </nz-input>
+                    <nz-datepicker formControlName="assignTime" [nzShowTime]="true" [nzPlaceHolder]="'指派时间'" [nzFormat]="'YYYY-MM-DD HH:mm:ss'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-datepicker>
                 </div>
             </div>
 			<div nz-row nz-form-item>
@@ -356,8 +361,8 @@
                     <label>接单时间</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('acceptTime')">
-                    <nz-input formControlName="acceptTime" [nzPlaceHolder]="'接单时间'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
-                    </nz-input>
+                    <nz-datepicker formControlName="acceptTime" [nzShowTime]="true" [nzPlaceHolder]="'接单时间'" [nzFormat]="'YYYY-MM-DD HH:mm:ss'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-datepicker>
                 </div>
             </div>
 			<div nz-row nz-form-item>
@@ -365,8 +370,8 @@
                     <label>完成时间</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('finishTime')">
-                    <nz-input formControlName="finishTime" [nzPlaceHolder]="'完成时间'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
-                    </nz-input>
+                    <nz-datepicker formControlName="finishTime" [nzShowTime]="true" [nzPlaceHolder]="'完成时间'" [nzFormat]="'YYYY-MM-DD HH:mm:ss'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-datepicker>
                 </div>
             </div>
 			<div nz-row nz-form-item>
@@ -374,8 +379,8 @@
                     <label>评价时间</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('rateTime')">
-                    <nz-input formControlName="rateTime" [nzPlaceHolder]="'评价时间'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
-                    </nz-input>
+                    <nz-datepicker formControlName="rateTime" [nzShowTime]="true" [nzPlaceHolder]="'评价时间'" [nzFormat]="'YYYY-MM-DD HH:mm:ss'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    </nz-datepicker>
                 </div>
             </div>
 			<div nz-row nz-form-item>

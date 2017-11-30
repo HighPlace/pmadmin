@@ -27,6 +27,11 @@ export class NoticeComponent implements OnInit {
     total = 0;
     pageIndex = 1;
     pageSize = 10;
+    sortField = 'publishDate';
+    sortType = 'desc';
+    sortMap = {
+        publishDate   : 'descend'
+    };
 
     valForm: FormGroup;
     isVisible = false;
@@ -110,8 +115,8 @@ export class NoticeComponent implements OnInit {
         const params: any = {
             pageNum: this.pageIndex,
             pageSize: this.pageSize,
-            sortField: 'createTime',
-            sortType: 'desc'
+            sortField: this.sortField,
+            sortType: this.sortType
         };
 
         if (this.filter.title) {
@@ -139,6 +144,23 @@ export class NoticeComponent implements OnInit {
             this.showErr();
             console.log(err);
         });
+    }
+
+    sort(sortName, value) {
+        this.sortField = sortName;
+        if (value  === 'ascend') {
+            this.sortType = 'asc';
+        } else {
+            this.sortType = 'desc';
+        }
+        Object.keys(this.sortMap).forEach(key => {
+            if (key !== sortName) {
+                this.sortMap[ key ] = null;
+            } else {
+                this.sortMap[ key ] = value;
+            }
+        });
+        this.load(true);
     }
 
     openDetail(data: Notice, isEdit: boolean) {

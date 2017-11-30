@@ -17,7 +17,7 @@ import * as moment from 'moment';
  */
 @Pipe({ name: '_date' })
 export class MomentDatePipe implements PipeTransform {
-    transform(value: Date, formatString: string = 'YYYY-MM-DD HH:mm'): string {
+    transform(value: Date, formatString: string = 'YYYY-MM-DD HH:mm:ss'): string {
         if (value) {
             return moment(value).format(formatString);
         } else {
