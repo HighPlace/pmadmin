@@ -13,6 +13,7 @@ import * as moment from 'moment';
 export class RequestComponent implements OnInit {
     types: any[] = [];
     subTypes: any[] = [];
+    newSubTypeOption = null;
     filter: any = {
         type: '',
         subType: '',
@@ -118,6 +119,36 @@ export class RequestComponent implements OnInit {
                 this.subTypes = this.types[i].subType;
                 break;
             }
+        }
+    }
+
+    get subTypeOptions() {
+        if (this.newTypeOption) {
+            return [this.newSubTypeOption, ...this.subTypes];
+        } else {
+            return this.subTypes;
+        }
+    }
+
+    subTypeChange($event) {
+        if (!$event) {
+            this.newSubTypeOption = null;
+            return;
+        }
+        if ($event && this.types.findIndex(e => e === $event) === -1) {
+            this.newSubTypeOption = $event;
+        }
+    }
+
+    subTypeOpenChange(isOpen) {
+        if (this.newSubTypeOption && !isOpen) {
+            this.subTypes.push(this.newSubTypeOption);
+            setTimeout(() => {
+                this.valForm.patchValue({
+                    subType: this.subTypes[this.subTypes.length - 1]
+                });
+            }, 100);
+            this.newSubTypeOption = null;
         }
     }
 

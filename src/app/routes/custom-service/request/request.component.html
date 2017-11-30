@@ -226,10 +226,10 @@
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('type')">
                     <nz-select
-                        [nzPlaceHolder]="'服务大类'"
+                        [nzPlaceHolder]="'选择服务大类'"
                         formControlName="type"
-                        [nzDisabled]="dialogStatus === 'view'"
-                        (ngModelChange)="setSubtypes($event)">
+                        (ngModelChange)="setSubtypes($event)"
+                        [nzDisabled]="dialogStatus === 'view'">
                         <nz-option
                             *ngFor="let option of types"
                             [nzLabel]="option.type"
@@ -242,10 +242,17 @@
                 <div nz-form-label nz-col [nzSpan]="7">
                     <label>服务小类</label>
                 </div>
+
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('subType')">
                     <nz-select
+                        nzAllowClear
                         [nzPlaceHolder]="'服务小类'"
+                        [nzFilter]="true"
                         formControlName="subType"
+                        (nzSearchChange)="subTypeChange($event)"
+                        (nzOpenChange)="subTypeOpenChange($event)"
+                        [nzNotFoundContent]="'无法找到'"
+                        [nzShowSearch]="true"
                         [nzDisabled]="dialogStatus === 'view'">
                         <nz-option
                             *ngFor="let option of subTypes"
