@@ -43,7 +43,7 @@ export class Employee {
     deptName = '';
     employeeName = '';
 	phone = '';
-	sysUsername = null;
+	username = null;
 	employeeCode = null;
 	position = null;
 	status = 0;
