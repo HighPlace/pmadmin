@@ -129,7 +129,7 @@
 
                 <div nz-col [nzSm]="4" [nzOffset]="12" align="right">
                     <button nz-button [nzType]="'primary'" (click)="load(true)" [nzLoading]="loading">查询</button>
-                    <button nz-button (click)="openDetail({})" [disabled]="loading">新增</button>
+                    <button nz-button (click)="openDetail({})" [disabled]="loading">发起工单</button>
                 </div>
             </div>
         </form>
@@ -167,14 +167,14 @@
                         <th nz-th><span>服务类型</span></th>
                         <th nz-th><span>来源</span></th>
                         <th nz-th><span>发起时间</span><nz-table-sort [(nzValue)]="sortMap.startTime" (nzValueChange)="sort('startTime',$event)"></nz-table-sort></th>
-                        <th nz-th><span>服务优先级</span></th>
+                        <th nz-th><span>服务优先级</span><nz-table-sort [(nzValue)]="sortMap.priority" (nzValueChange)="sort('priority',$event)"></nz-table-sort></th>
                         <th nz-th><span>服务状态</span></th>
                         <th nz-th><span>操作</span></th>
                     </tr>
                     </thead>
                     <tbody nz-tbody>
                     <ng-template ngFor let-data [ngForOf]="nzTable.data">
-                    <tr nz-tbody-tr *ngFor="let data of nzTable.data">
+                    <!--<tr nz-tbody-tr *ngFor="let data of nzTable.data">-->
                         <tr nz-tbody-tr>
                         <td nz-td [nzExpand]="true">
                             <nz-row-expand-icon [(nzExpand)]="data.expand"></nz-row-expand-icon>
@@ -186,18 +186,18 @@
                         <td nz-td>{{data.status | requestStatus}}</td>
                         <td nz-td>
                             <a (click)="openDetail(data)">详情</a>
+                            <span *ngIf="data.status === 0" nz-table-divider></span>
+                            <a *ngIf="data.status === 0" (click)="openDetail(data, true)">工单指派</a>
                             <span nz-table-divider></span>
                             <nz-popconfirm [nzTitle]="'确定要删除吗？'" [nzOkText]="'删除'" [nzCancelText]="'取消'"
                                            (nzOnConfirm)="deleteData(data)">
                                 <a nz-popconfirm>删除</a>
                             </nz-popconfirm>
-                            <span nz-table-divider></span>
-                            <a (click)="openDetail(data, true)">编辑</a>
                         </td>
                     </tr>
                     <tr nz-tbody-tr *ngIf="data.expand">
                         <td nz-td></td>
-                        <td nz-td colspan="5">
+                        <td nz-td colspan="6">
                             工单内容:<br>
                             {{data.content}}
                         </td>

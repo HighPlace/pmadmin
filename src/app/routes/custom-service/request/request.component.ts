@@ -41,7 +41,8 @@ export class RequestComponent implements OnInit {
     sortType = 'desc';
     sortMap = {
         requestId   : null,
-        startTime    : null
+        startTime    : null,
+        priority     : null
     };
 
     valForm: FormGroup;
@@ -123,7 +124,7 @@ export class RequestComponent implements OnInit {
     }
 
     get subTypeOptions() {
-        if (this.newTypeOption) {
+        if (this.newSubTypeOption) {
             return [this.newSubTypeOption, ...this.subTypes];
         } else {
             return this.subTypes;

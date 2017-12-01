@@ -56,23 +56,18 @@
             "acl": "role-a",
             "children": [
                 {
-                    "text": "收费科目管理",
-                    "link": "/elements/sweetalert"
-                },
-                {
-                    "text": "账单类型管理",
-                    "link": "/elements/tree-antd",
-                    "translate": "账单类型管理"
+                    "text": "收费科目定义",
+                    "link": "/chargemanage/subject"
                 },
                 {
                     "text": "费用出账",
-                    "link": "/elements/sortable",
+                    "link": "/chargemanage/charge",
                     "translate": "费用出账"
                 },
                 {
-                    "text": "账单费用明细",
-                    "link": "/elements/spin",
-                    "translate": "账单费用明细"
+                    "text": "收费明细",
+                    "link": "/chargemanage/detail",
+                    "translate": "收费明细"
                 }
             ]
         },
