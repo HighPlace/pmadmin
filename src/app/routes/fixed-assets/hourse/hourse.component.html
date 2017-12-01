@@ -112,7 +112,7 @@
             <ng-template #body>
                 <div class="mb-sm text-right">
                     <a href="{{sampleUrl}}">模板下载</a>&nbsp;&nbsp;
-                    <a >批量导入</a>&nbsp;&nbsp;
+                    <a (click)="import()">批量导入</a>&nbsp;&nbsp;
                     <a >批量导出</a>
                 </div>
                 <nz-table #nzTable
@@ -309,3 +309,5 @@
     </ng-template>
 
 </nz-modal>
+
+<app-upload-file [isVisible]="isImport"></app-upload-file>

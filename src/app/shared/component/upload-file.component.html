@@ -1,0 +1,18 @@
+<nz-modal [nzVisible]="isVisible"
+          [nzTitle]="'上传'"
+          [nzContent]="modalContent"
+          [nzFooter]="modalFooter"
+          (nzOnCancel)="handleCancel($event)"
+          [nzMaskClosable]="maskClosable">
+    <ng-template #modalContent>
+        <button nz-button class="ant-btn__block file-upload mt-sm">
+            <input id="file1" type="file" upload-file />
+            <i class="anticon anticon-upload"></i><span>选择上传文件</span>
+        </button>
+    </ng-template>
+    <ng-template #modalFooter>
+        <button nz-button [nzType]="'default'" [nzSize]="'large'" (click)="handleCancel($event)">
+            关闭
+        </button>
+    </ng-template>
+</nz-modal>

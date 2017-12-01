@@ -15,8 +15,11 @@ import { KeysPipe } from './pipes/keys.pipe';
 import { YNPipe } from './pipes/yn.pipe';
 import { DataOperPipe } from '@shared/pipes/data-oper.pipe';
 import { ModalHelper } from './helper/modal.helper';
+import {UploadFileComponent} from '@shared/component/upload-file.component';
+import {UploadFileDirective} from '@shared/directives/upload-file.directive';
 
-const DIRECTIVES = [SparklineDirective, DownFileDirective];
+const DIRECTIVES = [SparklineDirective, DownFileDirective, UploadFileDirective];
+const COMPONENT = [UploadFileComponent];
 const PIPES = [MomentDatePipe, CNCurrencyPipe, KeysPipe, YNPipe, DataOperPipe];
 const HELPERS = [ ModalHelper ];
 
@@ -29,7 +32,7 @@ const HELPERS = [ ModalHelper ];
         AngularWebStorageModule,
         NgZorroAntdModule.forRoot()
     ],
-    declarations: [...DIRECTIVES, ...PIPES],
+    declarations: [...DIRECTIVES, ...PIPES, ...COMPONENT],
     providers: [ ...HELPERS ],
     exports: [
         CommonModule,
@@ -41,7 +44,8 @@ const HELPERS = [ ModalHelper ];
         TranslateModule,
 
         ...DIRECTIVES,
-        ...PIPES
+        ...PIPES,
+        ...COMPONENT
     ]
 })
 export class SharedModule {
