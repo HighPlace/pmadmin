@@ -15,33 +15,13 @@
     <!--</nz-breadcrumb-item>-->
     <!--</nz-breadcrumb>-->
 </div>
-
-<nz-card>
-    <ng-template #body>
-        <form nz-form>
-                <div nz-col [nzSm]="4" [nzOffset]="20" align="right">
-                    <button nz-button (click)="openDetail({})" [disabled]="loading">新增收费科目</button>
-                </div>
-        </form>
-    </ng-template>
-</nz-card>
-
 <div nz-row [nzGutter]="16">
     <div nz-col [nzMd]="24">
         <nz-card>
             <ng-template #body>
-                <!--<div class="mb-sm text-right">-->
-                <!--<nz-dropdown>-->
-                <!--<button nz-button nz-dropdown>-->
-                <!--<span>Export</span> <i class="anticon anticon-down"></i>-->
-                <!--</button>-->
-                <!--<ul nz-menu>-->
-                <!--<li nz-menu-item>Excel</li>-->
-                <!--<li nz-menu-item>JSON</li>-->
-                <!--<li nz-menu-item>PNG</li>-->
-                <!--</ul>-->
-                <!--</nz-dropdown>-->
-                <!--</div>-->
+                <div class="mb-sm text-right">
+                <button nz-button (click)="openDetail({})" [disabled]="loading">新增收费科目</button>
+                </div>
                 <nz-table #nzTable
                           [nzAjaxData]="list"
                           [nzShowSizeChanger]="true"
