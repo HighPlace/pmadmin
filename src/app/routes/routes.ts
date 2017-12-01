@@ -17,6 +17,7 @@ export const routes = [
             { path: 'orgstructure', loadChildren: './organization-structure/organization-structure.module#OrganizationStructureModule' },
             { path: 'customservice', loadChildren: './custom-service/custom-service.module#CustomServiceModule' },
             { path: 'chargemanage', loadChildren: './charge-manage/charge-manage.module#chargeManageModule' },
+            { path: 'sysmanage', loadChildren: './sys-manage/sys-manage.module#SysManageModule' },
             { path: 'widgets', loadChildren: './widgets/widgets.module#WidgetsModule' },
             { path: 'elements', loadChildren: './elements/elements.module#ElementsModule' },
             { path: 'forms', loadChildren: './forms/forms.module#FormsModule' },

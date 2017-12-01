@@ -98,7 +98,7 @@
             "acl": "role-b",
             "children": [{
                 "text": "平台账号管理",
-                "link": "/elements/colors",
+                "link": "/sysmanage/account",
                 "translate": "平台账号管理"
             }, {
                 "text": "物业微信公众号授权",
