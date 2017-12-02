@@ -66,12 +66,16 @@ export class NoticeComponent implements OnInit {
     }
 
     titleSearchChange(value) {
-        this.http.get('/pm/notice/title', {input: value}).subscribe((data: any) => {
-            this.titleSearchOptions = data.data || [];
-        }, (err: any) => {
-            this.showErr();
-            console.log(err);
-        });
+        if (value) {
+            this.http.get('/pm/notice/title', {input: value}).subscribe((data: any) => {
+                this.titleSearchOptions = data.data || [];
+            }, (err: any) => {
+                this.showErr();
+                console.log(err);
+            });
+        }else {
+            this.titleSearchOptions = [];
+        }
     }
 
     typeSearchChange(value) {

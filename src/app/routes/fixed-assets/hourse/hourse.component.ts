@@ -48,6 +48,8 @@ export class HourseComponent implements OnInit {
     dialogStatus = 'view'; // edit add
     curHourse = new Hourse();
 
+    isImport = false;
+
     constructor(private http: _HttpClient,
                 private msg: NzMessageService,
                 private setting: SettingsService,
@@ -256,5 +258,9 @@ export class HourseComponent implements OnInit {
                 nzDuration: 3 * 1000
             }
         );
+    }
+
+    import() {
+        this.isImport = true;
     }
 }

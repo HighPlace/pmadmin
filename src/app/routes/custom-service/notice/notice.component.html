@@ -27,7 +27,7 @@
                     <nz-select
                         nzAllowClear
                         [nzPlaceHolder]="'输入标题'"
-                        [nzFilter]="false"
+                        [nzFilter]="true"
                         [(ngModel)]="filter.title"
                         name="filter.title"
                         (nzSearchChange)="titleSearchChange($event)"
