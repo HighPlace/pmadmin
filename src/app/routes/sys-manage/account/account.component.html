@@ -144,7 +144,7 @@
                         <td nz-td>{{data.username}}</td>
                         <td nz-td>{{data.roles.length ? data.roles[0].roleName : '超级管理员'}}</td>
                         <td nz-td>{{data.accountLocked | accountStatusPipe}}</td>
-                        <td nz-td>{{data.wxOpenId ? '绑定' : '未绑定'}}</td>
+                        <td nz-td>{{data.wxOpenId ? '已绑定' : '未绑定'}}</td>
                         <td nz-td>
                             <a (click)="openDetail(data)">停用</a>
                             <span nz-table-divider></span>
