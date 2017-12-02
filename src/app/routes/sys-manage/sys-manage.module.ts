@@ -3,6 +3,8 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { SharedModule } from '@shared/shared.module';
 import { AccountComponent } from './account/account.component';
+import { EmployeeStatusPipe } from './account/employee-status.pipe';
+import { AccountStatusPipe } from './account/account-status.pipe';
 
 const routes: Routes = [
     { path: 'account', component: AccountComponent }
@@ -14,7 +16,9 @@ const routes: Routes = [
         RouterModule.forChild(routes)
     ],
     declarations: [
-        AccountComponent
+        AccountComponent,
+        EmployeeStatusPipe,
+        AccountStatusPipe
     ],
     exports: [
         RouterModule

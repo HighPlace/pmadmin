@@ -21,8 +21,8 @@
         <form nz-form>
             <div nz-row nz-form-item [nzGutter]="0" class="mb0">
 
-                <div nz-form-label nz-col [nzSm]="1">
-                    <label>账号名</label>
+                <div nz-form-label nz-col [nzSm]="2">
+                    <label>平台账号</label>
                 </div>
                 <div nz-form-control nz-col [nzSm]="2">
                     <nz-input [(ngModel)]="filter.username" name="filter.username"></nz-input>
@@ -79,7 +79,7 @@
                 <div nz-form-control nz-col [nzSm]="2">
                     <nz-dropdown>
                         <a class="ant-dropdown-link" nz-dropdown>
-                            {{filter.status}} <i class="anticon anticon-down"></i>
+                            {{filter.status | employeeStatus }} <i class="anticon anticon-down"></i>
                         </a>
                         <ul nz-menu>
                             <li
@@ -90,8 +90,9 @@
                         </ul>
                     </nz-dropdown>
                 </div>
-
-                <div nz-col [nzSm]="4" [nzOffset]="0">
+            </div>
+            <div nz-row nz-form-item [nzGutter]="0" class="mb0">
+                <div nz-col [nzSm]="4" [nzOffset]="20">
                     <button nz-button [nzType]="'primary'" (click)="load(true)" [nzLoading]="loading">查询</button>
                     <button nz-button (click)="openDetail({})" [disabled]="loading">创建账号</button>
                 </div>
@@ -127,25 +128,27 @@
                           (nzPageSizeChange)="load(true)">
                     <thead nz-thead>
                     <tr>
-                        <th nz-th><span>帐号名</span></th>
                         <th nz-th><span>员工姓名</span></th>
                         <th nz-th><span>岗位</span></th>
+                        <th nz-th><span>平台账号</span></th>
+                        <th nz-th><span>角色</span></th>
                         <th nz-th><span>帐号状态</span></th>
-						<th nz-th><span>绑定微信</span></th>
+                        <th nz-th><span>绑定微信</span></th>
                         <th nz-th><span>操作</span></th>
                     </tr>
                     </thead>
                     <tbody nz-tbody>
                     <tr nz-tbody-tr *ngFor="let data of nzTable.data">
-                        <td nz-td>{{data.username}}</td>
                         <td nz-td>{{data.employeeName}}</td>
                         <td nz-td>{{data.deptName}}-{{data.position}}</td>
-                        <td nz-td>{{data.accountLocked}}</td>
-						<td nz-td>{{data.wxOpenId}}</td>
+                        <td nz-td>{{data.username}}</td>
+                        <td nz-td>{{data.roles.length ? data.roles[0].roleName : '超级管理员'}}</td>
+                        <td nz-td>{{data.accountLocked | accountStatusPipe}}</td>
+                        <td nz-td>{{data.wxOpenId ? '绑定' : '未绑定'}}</td>
                         <td nz-td>
                             <a (click)="openDetail(data)">停用</a>
                             <span nz-table-divider></span>
-							<a (click)="openDetail(data)">启用</a>
+                            <a (click)="openDetail(data)">启用</a>
                             <span nz-table-divider></span>
                             <a (click)="openDetail(data, true)">重置密码</a>
                         </td>
@@ -167,25 +170,27 @@
           [nzMaskClosable]="maskClosable">
     <ng-template #modalContent>
         <form nz-form [formGroup]="valForm" (ngSubmit)="submit()" role="form">
-			 <div nz-row nz-form-item>
+            <div nz-row nz-form-item>
                 <div nz-form-label nz-col [nzSpan]="7">
                     <label>员工姓名</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('employeeId')">
-                    <nz-input formControlName="employeeId" [nzPlaceHolder]="'员工姓名'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    <nz-input formControlName="employeeId" [nzPlaceHolder]="'员工姓名'" [nzSize]="'large'"
+                              [nzDisabled]="dialogStatus === 'view'">
                     </nz-input>
                 </div>
             </div>
-			<div nz-row nz-form-item>
+            <div nz-row nz-form-item>
                 <div nz-form-label nz-col [nzSpan]="7">
                     <label>账号名称(不能重复)</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('username')">
-                    <nz-input formControlName="username" [nzPlaceHolder]="'账号名称(不能重复)'" [nzSize]="'large'" [nzDisabled]="dialogStatus === 'view'">
+                    <nz-input formControlName="username" [nzPlaceHolder]="'账号名称(不能重复)'" [nzSize]="'large'"
+                              [nzDisabled]="dialogStatus === 'view'">
                     </nz-input>
                 </div>
             </div>
-			<div nz-row nz-form-item>
+            <div nz-row nz-form-item>
                 <div nz-form-label nz-col [nzSpan]="7">
                     <label>平台角色</label>
                 </div>
@@ -208,7 +213,8 @@
         <button nz-button [nzType]="'default'" [nzSize]="'large'" (click)="handleCancel($event)">
             {{dialogStatus == 'view'?'关 闭':'取 消'}}
         </button>
-        <button nz-button *ngIf="dialogStatus != 'view'" [disabled]="!valForm.valid" [nzType]="'primary'" [nzSize]="'large'" (click)="handleOk($event)" [nzLoading]="isConfirmLoading">
+        <button nz-button *ngIf="dialogStatus != 'view'" [disabled]="!valForm.valid" [nzType]="'primary'"
+                [nzSize]="'large'" (click)="handleOk($event)" [nzLoading]="isConfirmLoading">
             提 交
         </button>
     </ng-template>
