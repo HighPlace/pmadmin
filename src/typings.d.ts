@@ -16,3 +16,6 @@ declare var require: NodeRequire;
 declare var G2: any;
 declare var Slider: any;
 declare var Cloud: any;
+
+// 阿里文件上传接口
+declare var OSS: any;
