@@ -1,0 +1,31 @@
+<nz-modal [nzVisible]="isVisible"
+          [nzTitle]="'批量导入'"
+          [nzContent]="modalContent"
+          [nzFooter]="modalFooter"
+          (nzOnCancel)="handleCancel($event)"
+          [nzMaskClosable]="maskClosable">
+    <ng-template #modalContent>
+        <div nz-row [ngStyle]="{ 'display': processing ? 'none' : '' }">
+            <div nz-col [nzSpan]="8" [nzOffset]="8">
+                <button nz-button class="ant-btn__block file-upload mt-sm">
+                    <input id="file1" type="file" upload-file (beginUpload)="beginUpload($event)" (afterUpload)="afterUpload($event)"/>
+                    <i class="anticon anticon-upload"></i><span>选择文件</span>
+                </button>
+            </div>
+        </div>
+        <div nz-row [ngStyle]="{ 'display': !processing ? 'none' : '' }">
+            <div nz-col [nzSpan]="24" >
+                <nz-progress [ngModel]="progressValue" [nzStatus]="progressStatus"></nz-progress>
+                <span>{{progressMsg}}</span>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template #modalFooter>
+        <button nz-button *ngIf="progressStatus === 'active'" [nzType]="'default'" [nzSize]="'large'" (click)="handleCancel($event)">
+            关 闭
+        </button>
+        <button nz-button *ngIf="progressStatus != 'active'" [nzType]="'primary'" [nzSize]="'large'" (click)="handleOk($event)">
+            确 认
+        </button>
+    </ng-template>
+</nz-modal>

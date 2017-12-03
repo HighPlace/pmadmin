@@ -260,7 +260,13 @@ export class HourseComponent implements OnInit {
         );
     }
 
-    import() {
+    importFile() {
         this.isImport = true;
+    }
+
+    dealImportAction(action) {
+        if (action.type === 'close') {
+            this.isImport = false;
+        }
     }
 }

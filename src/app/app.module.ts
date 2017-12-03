@@ -6,15 +6,15 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LocalStorageService } from 'angular-web-storage';
 
-import { CoreModule } from './core/core.module';
-import { SharedModule } from './shared/shared.module';
+import { CoreModule } from '@core/core.module';
+import { SharedModule } from '@shared/shared.module';
 import { AppComponent } from './app.component';
 import { RoutesModule } from './routes/routes.module';
 import { LayoutModule } from './layout/layout.module';
-import { StartupService } from './core/services/startup.service';
-import { MenuService } from './core/services/menu.service';
-import { TranslatorService } from './core/translator/translator.service';
-import { SettingsService } from './core/services/settings.service';
+import { StartupService } from '@core/services/startup.service';
+import { MenuService } from '@core/services/menu.service';
+import { TranslatorService } from '@core/translator/translator.service';
+import { SettingsService } from '@core/services/settings.service';
 import { TokenInterceptor } from '@core/net/token/token.interceptor';
 
 // AoT requires an exported function for factories
