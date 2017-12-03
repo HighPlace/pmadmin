@@ -11,8 +11,7 @@ import {SettingsService} from '@core/services/settings.service';
 @Directive({selector: '[upload-file]'})
 export class UploadFileDirective {
 
-    @Output() beginUpload: EventEmitter<any> = new EventEmitter<any>();
-    @Output() afterUpload: EventEmitter<any> = new EventEmitter<any>();
+    @Output() statusChange: EventEmitter<any> = new EventEmitter<any>();
 
     token = null;
 
@@ -39,7 +38,7 @@ export class UploadFileDirective {
         });
 
         if (file) {
-            this.beginUpload.emit({
+            this.statusChange.emit({
                 type: 'uploading'
             });
 
@@ -56,16 +55,30 @@ export class UploadFileDirective {
                 console.log('file upload success: ' + fileUrl);
 
                 if (fileUrl) {
-                    this.afterUpload.emit({
+                    this.statusChange.emit({
                         type: 'uploaded',
                         data: {
                             name: saveAs,
                             url: fileUrl
                         }
                     });
+                }else {
+                    this.statusChange.emit({
+                        type: 'error',
+                        data: {
+                            msg: '获取文件上传结果异常，请稍后重试！'
+                        }
+                    });
                 }
             }).catch((err) => {
                 console.log(err);
+
+                this.statusChange.emit({
+                    type: 'error',
+                    data: {
+                        msg: '文件上传失败，请稍后重试！'
+                    }
+                });
             });
         }
     }

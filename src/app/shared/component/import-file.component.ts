@@ -85,6 +85,10 @@ export class ImportFileComponent implements OnChanges {
     }
 
     getImportStatus() {
+        if (this.progressValue + 8 < 100 && this.progressStatus === 'active') {
+            this.progressValue += 8;
+        }
+
         this.http.get('/pm/property/import', {taskId: this.taskId}).subscribe((data: any) => {
             this.taskResult = data || {};
             console.log(data);
@@ -92,7 +96,7 @@ export class ImportFileComponent implements OnChanges {
             if (this.taskResult.status <= 0) {
                 setTimeout(() => {
                     this.getImportStatus();
-                }, 3000);
+                }, 1000);
             }else {
                 const result = this.taskResult.result || {};
                 if (result.resultCode === 0) {
@@ -117,15 +121,5 @@ export class ImportFileComponent implements OnChanges {
     handleOk(e) {
         this.dealAction.emit({type: 'close'});
         this.onStatusChange({type: 'confirm'});
-    }
-
-    beginUpload(status) {
-        this.onStatusChange(status);
-        // alert('1');
-    }
-
-    afterUpload(status) {
-        this.onStatusChange(status);
-        // alert('2');
     }
 }

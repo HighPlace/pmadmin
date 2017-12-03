@@ -72,6 +72,12 @@ export class HourseComponent implements OnInit {
             status: [0, Validators.required]
         });
 
+        this.http.get('/pm/aliyun/sampleUrl/property')
+            .subscribe((data: any) => {
+                this.sampleUrl = data.fileUrl || [];
+            }, (err: any) => {
+                console.log(err);
+            });
     }
 
     ngOnInit() {
@@ -90,13 +96,6 @@ export class HourseComponent implements OnInit {
                 if (this.filter.building) {
                     this.setUnits(this.filter.building);
                 }
-            }, (err: any) => {
-                this.showErr();
-                console.log(err);
-            });
-        this.http.get('/pm/aliyun/sampleUrl/property')
-            .subscribe((data: any) => {
-                this.sampleUrl = data.fileUrl || [];
             }, (err: any) => {
                 this.showErr();
                 console.log(err);
@@ -268,5 +267,37 @@ export class HourseComponent implements OnInit {
         if (action.type === 'close') {
             this.isImport = false;
         }
+    }
+
+    exportFile() {
+        this.http.post('/pm/property/export', {vendor: 1})
+            .subscribe((data: any) => {
+                if (data.taskId) {
+                    this.getExportStatus(data.taskId);
+                }
+            }, (err: any) => {
+                this.showErr();
+                console.log(err);
+            });
+    }
+
+    getExportStatus(taskId) {
+        this.http.get('/pm/property/export', {taskId: taskId})
+            .subscribe((data: any) => {
+                if (data.status <= 0) {
+                    setTimeout(() => {
+                        this.getExportStatus(taskId);
+                    }, 1000);
+                }else {
+                    const result = data.result || {};
+                    if (result.resultCode === 0 && result.fileUrl) {
+                        window.location.href = result.fileUrl;
+                    }else {
+                        this.msg.error('文件导出失败：' + result.resultMessage, {nzDuration: 3000});
+                    }
+                }
+            }, (err: any) => {
+                console.log(err);
+            });
     }
 }
