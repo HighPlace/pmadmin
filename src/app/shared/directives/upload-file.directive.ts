@@ -19,13 +19,6 @@ export class UploadFileDirective {
                 private http: _HttpClient,
                 private settings: SettingsService,
                 private msgSrv: NzMessageService) {
-
-        this.http.get('/pm/aliyun/ossTempToken').subscribe((data: any) => {
-            this.token = data;
-            console.log(this.token);
-        }, (err: any) => {
-            console.log(err);
-        });
     }
 
     @HostListener('change')
@@ -42,41 +35,65 @@ export class UploadFileDirective {
                 type: 'uploading'
             });
 
-            let client = new OSS.Wrapper({
-                accessKeyId: this.token.accessKeyId,
-                accessKeySecret: this.token.accessKeySecret,
-                stsToken: this.token.stsToken,
-                endpoint: this.token.endpoint,
-                bucket: this.token.bucket
-            });
-            let saveAs = this.settings.user.username + '-' + file.name;
-            client.multipartUpload(saveAs, file).then((result) => {
-                const fileUrl = result.url || '';
-                console.log('file upload success: ' + fileUrl);
+            this.token = null;
+            this.http.get('/pm/aliyun/ossTempToken').subscribe((data: any) => {
+                if (data && data.accessKeyId) {
+                    this.token = data;
+                }
 
-                if (fileUrl) {
-                    this.statusChange.emit({
-                        type: 'uploaded',
-                        data: {
-                            name: saveAs,
-                            url: fileUrl
+                console.log('uploadKey: ' + JSON.stringify(this.token));
+                if (this.token) {
+                    let client = new OSS.Wrapper({
+                        accessKeyId: this.token.accessKeyId,
+                        accessKeySecret: this.token.accessKeySecret,
+                        stsToken: this.token.stsToken,
+                        endpoint: this.token.endpoint,
+                        bucket: this.token.bucket
+                    });
+                    let saveAs = this.settings.user.username + '-' + file.name;
+                    client.multipartUpload(saveAs, file).then((result) => {
+                        const fileUrl = result.url || '';
+                        console.log('file upload success: ' + fileUrl);
+
+                        if (fileUrl) {
+                            this.statusChange.emit({
+                                type: 'uploaded',
+                                data: {
+                                    name: saveAs,
+                                    url: fileUrl
+                                }
+                            });
+                        }else {
+                            this.statusChange.emit({
+                                type: 'error',
+                                data: {
+                                    msg: '获取文件上传结果异常，请稍后重试！'
+                                }
+                            });
                         }
+                    }).catch((err) => {
+                        console.log(err);
+                        this.statusChange.emit({
+                            type: 'error',
+                            data: {
+                                msg: '文件上传失败，请稍后重试！'
+                            }
+                        });
                     });
                 }else {
                     this.statusChange.emit({
                         type: 'error',
                         data: {
-                            msg: '获取文件上传结果异常，请稍后重试！'
+                            msg: '文件上传票据获取失败，请稍后重试！'
                         }
                     });
                 }
-            }).catch((err) => {
+            }, (err: any) => {
                 console.log(err);
-
                 this.statusChange.emit({
                     type: 'error',
                     data: {
-                        msg: '文件上传失败，请稍后重试！'
+                        msg: '文件上传票据获取异常，请稍后重试！'
                     }
                 });
             });
