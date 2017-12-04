@@ -2,7 +2,7 @@ import {Router} from '@angular/router';
 import {Component} from '@angular/core';
 import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import {_HttpClient} from '@core/services/http.client';
-import {Observable} from 'rxjs/Rx';
+import {Observable} from 'rxjs/Observable';
 import {SettingsService} from '@core/services/settings.service';
 
 @Component({

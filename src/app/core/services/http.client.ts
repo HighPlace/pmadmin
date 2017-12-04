@@ -1,7 +1,7 @@
 // tslint:disable:no-console class-name
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/do';
 import * as moment from 'moment';
 import { environment } from '../../../environments/environment';

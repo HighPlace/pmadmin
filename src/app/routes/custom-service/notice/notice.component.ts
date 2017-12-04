@@ -187,7 +187,7 @@ export class NoticeComponent implements OnInit {
         this.isVisible = true;
     }
 
-    handleOk(e, isRelease) {
+    handleOk(e, isRelease?) {
         this.isConfirmLoading = true;
 
         if (this.dialogStatus === 'add') {
