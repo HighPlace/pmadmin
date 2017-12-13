@@ -4,6 +4,7 @@ import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import {_HttpClient} from '@core/services/http.client';
 import {Observable} from 'rxjs/Observable';
 import {SettingsService} from '@core/services/settings.service';
+import {NzMessageService} from 'ng-zorro-antd';
 
 @Component({
     selector: 'app-pages-login',
@@ -17,6 +18,7 @@ export class LoginComponent {
 
     constructor(public settings: SettingsService,
                 private http: _HttpClient,
+                private msg: NzMessageService,
                 fb: FormBuilder,
                 private router: Router) {
         this.valForm = fb.group({
@@ -77,6 +79,13 @@ export class LoginComponent {
                 console.log(data);
                 this.router.navigate(['']);
             }, (err: any) => {
+                this.msg.create(
+                    'error',
+                    '账号密码错误或账号异常，请重新登陆！',
+                    {
+                        nzDuration: 3 * 1000
+                    }
+                );
                 console.log(err);
             });
         }

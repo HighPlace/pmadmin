@@ -142,15 +142,25 @@
                         <td nz-td>{{data.employeeName}}</td>
                         <td nz-td>{{data.deptName}}-{{data.position}}</td>
                         <td nz-td>{{data.username}}</td>
-                        <td nz-td>{{data.roles.length ? data.roles[0].roleName : '超级管理员'}}</td>
-                        <td nz-td>{{data.accountLocked | accountStatusPipe}}</td>
+                        <td nz-td>{{ displayRole(data.roles) }} </td>
+                        <td nz-td>
+                            <nz-tag *ngIf="data.accountLocked === true" [nzColor]="'pink'">无效</nz-tag>
+                            <nz-tag *ngIf="data.accountLocked === false" [nzColor]="'green'">有效</nz-tag>
+                        </td>
                         <td nz-td>{{data.wxOpenId ? '已绑定' : '未绑定'}}</td>
                         <td nz-td>
-                            <a (click)="openDetail(data)">停用</a>
-                            <span nz-table-divider></span>
-                            <a (click)="openDetail(data)">启用</a>
-                            <span nz-table-divider></span>
-                            <a (click)="openDetail(data, true)">重置密码</a>
+                            <nz-popconfirm *ngIf="data.accountLocked === false" [nzTitle]="'确定要停用吗？'" [nzOkText]="'停用'" [nzCancelText]="'取消'"
+                                           (nzOnConfirm)="lockAccount(data)">
+                                <a nz-popconfirm>停用</a>
+                            </nz-popconfirm>
+                            <span *ngIf="data.accountLocked === false" nz-table-divider></span>
+                            <a *ngIf="data.accountLocked === false" (click)="openPassword(data)">重置密码</a>
+
+                            <nz-popconfirm *ngIf="data.accountLocked === true" [nzTitle]="'确定要启用吗？'" [nzOkText]="'启用'" [nzCancelText]="'取消'"
+                                           (nzOnConfirm)="unlockAccount(data)">
+                                <a nz-popconfirm>启用</a>
+                            </nz-popconfirm>
+
                         </td>
                     </tr>
                     </tbody>
@@ -172,39 +182,61 @@
         <form nz-form [formGroup]="valForm" (ngSubmit)="submit()" role="form">
             <div nz-row nz-form-item>
                 <div nz-form-label nz-col [nzSpan]="7">
-                    <label>员工姓名</label>
+                    <label nz-form-item-required>员工ID</label>
                 </div>
                 <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('employeeId')">
-                    <nz-input formControlName="employeeId" [nzPlaceHolder]="'员工姓名'" [nzSize]="'large'"
+                    <nz-input formControlName="employeeId" [nzPlaceHolder]="'员工ID'" [nzSize]="'large'"
                               [nzDisabled]="dialogStatus === 'view'">
                     </nz-input>
                 </div>
             </div>
             <div nz-row nz-form-item>
                 <div nz-form-label nz-col [nzSpan]="7">
-                    <label>账号名称(不能重复)</label>
+                    <label nz-form-item-required>账号名称</label>
                 </div>
-                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('username')">
-                    <nz-input formControlName="username" [nzPlaceHolder]="'账号名称(不能重复)'" [nzSize]="'large'"
-                              [nzDisabled]="dialogStatus === 'view'">
-                    </nz-input>
+                <div nz-form-control nz-col [nzSpan]="12" nzHasFeedback [nzValidateStatus]="getFormControl('username')" >
+                    <nz-input [nzSize]="'large'" formControlName="username" [nzPlaceHolder]="'账号名称(不能重复)'" [nzDisabled]="dialogStatus === 'view'" [nzId]="'username'" (ngModelChange)="updateConfirmValidatorAddUsername()"></nz-input>
+                    <div nz-form-explain *ngIf="getFormControl('username').dirty&&getFormControl('username').hasError('required')">帐户名长度必须为3-30之间!</div>
+                    <div nz-form-explain *ngIf="getFormControl('username').dirty&&getFormControl('username').hasError('confirm')">帐户名已存在,请重新输入!</div>
                 </div>
             </div>
             <div nz-row nz-form-item>
                 <div nz-form-label nz-col [nzSpan]="7">
-                    <label>平台角色</label>
+                    <label nz-form-item-required>平台角色</label>
                 </div>
-                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('roleId')">
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('roles')">
                     <nz-select
                         [nzPlaceHolder]="'平台角色'"
-                        formControlName="roleId"
-                        [nzDisabled]="dialogStatus === 'view'">
+                        formControlName="roles"
+                        [nzDisabled]="dialogStatus === 'view'"
+                        [nzMode]="'multiple'"
+                        [nzSize]="'large'">
                         <nz-option
                             *ngFor="let option of roles"
                             [nzLabel]="option.roleName"
-                            [nzValue]="option.roleId">
+                            [nzValue]="{'roleId': option.roleId}">
                         </nz-option>
                     </nz-select>
+                </div>
+            </div>
+            <div nz-form-item nz-row>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label nz-form-item-required>密码</label>
+                </div>
+                <div nz-form-control nz-col [nzSpan]="12" nzHasFeedback [nzValidateStatus]="getFormControl('password')">
+                    <nz-input [nzSize]="'large'" formControlName="password" [nzType]="'password'" [nzId]="'password'" (ngModelChange)="updateConfirmValidatorAdd()"></nz-input>
+                    <div nz-form-explain *ngIf="getFormControl('password').dirty&&getFormControl('password').hasError('required')">请输入密码!</div>
+                    <div nz-form-explain *ngIf="getFormControl('password').dirty&&getFormControl('password').hasError('pattern')">必须由字母和数字组成,长度6-16位!</div>
+                </div>
+            </div>
+            <div nz-form-item nz-row>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label nz-form-item-required>确认密码</label>
+                </div>
+                <div nz-form-control nz-col [nzSpan]="12" nzHasFeedback [nzValidateStatus]="getFormControl('checkPassword')">
+                    <nz-input [nzSize]="'large'" formControlName="checkPassword" [nzType]="'password'" [nzId]="'checkPassword'"></nz-input>
+                    <div nz-form-explain *ngIf="getFormControl('checkPassword').dirty&&getFormControl('checkPassword').hasError('required')">请再次输入密码!</div>
+                    <div nz-form-explain *ngIf="getFormControl('checkPassword').dirty&&getFormControl('checkPassword').hasError('confirm')">两次输入的密码不一致!</div>
                 </div>
             </div>
         </form>
@@ -220,3 +252,50 @@
     </ng-template>
 
 </nz-modal>
+
+
+<nz-modal [nzVisible]="isPwdVisible"
+          [nzTitle]="'重置密码'"
+          [nzContent]="modalPwdContent"
+          [nzFooter]="modalPwdFooter"
+          (nzOnCancel)="handlePwdCancel($event)"
+          [nzConfirmLoading]="isPwdConfirmLoading"
+          (nzOnOk)="handlePwdOk($event)"
+          [nzMaskClosable]="'false'">
+    <ng-template #modalPwdContent>
+        <form nz-form [formGroup]="valPwdForm" (ngSubmit)="_submitForm()" role="form">
+            <div nz-form-item nz-row>
+                <div nz-form-label nz-col [nzSm]="6" [nzXs]="24">
+                    <label nz-form-item-required>新密码</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback [nzValidateStatus]="getPwdFormControl('password')">
+                    <nz-input [nzSize]="'large'" formControlName="password" [nzType]="'password'" [nzId]="'password'" (ngModelChange)="updateConfirmValidator()"></nz-input>
+                    <div nz-form-explain *ngIf="getPwdFormControl('password').dirty&&getPwdFormControl('password').hasError('required')">请输入新密码!</div>
+                    <div nz-form-explain *ngIf="getPwdFormControl('password').dirty&&getPwdFormControl('password').hasError('pattern')">必须由字母和数字组成,长度6-16位!</div>
+                </div>
+            </div>
+            <div nz-form-item nz-row>
+                <div nz-form-label nz-col [nzSm]="6" [nzXs]="24">
+                    <label nz-form-item-required>确认新密码</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback [nzValidateStatus]="getPwdFormControl('checkPassword')">
+                    <nz-input [nzSize]="'large'" formControlName="checkPassword" [nzType]="'password'" [nzId]="'checkPassword'"></nz-input>
+                    <div nz-form-explain *ngIf="getPwdFormControl('checkPassword').dirty&&getPwdFormControl('checkPassword').hasError('required')">请再次输入新密码!</div>
+                    <div nz-form-explain *ngIf="getPwdFormControl('checkPassword').dirty&&getPwdFormControl('checkPassword').hasError('confirm')">两次输入的密码不一致!</div>
+                </div>
+            </div>
+        </form>
+    </ng-template>
+    <ng-template #modalPwdFooter>
+        <button nz-button [nzType]="'default'" [nzSize]="'large'" (click)="handlePwdCancel($event)">
+            取 消
+        </button>
+        <button nz-button [disabled]="!valPwdForm.valid" [nzType]="'primary'"
+                [nzSize]="'large'" (click)="handlePwdOk($event)" [nzLoading]="isPwdConfirmLoading">
+            提 交
+        </button>
+    </ng-template>
+
+</nz-modal>
+
+

@@ -4,12 +4,15 @@ import {NzMessageService, NzNotificationService, NzModalService} from 'ng-zorro-
 import {_HttpClient} from '@core/services/http.client';
 import {SettingsService} from '@core/services/settings.service';
 import {statusList, accountLockedList, Account, Role} from './data-model';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
     selector: 'app-account',
     templateUrl: './account.component.html'
 })
 export class AccountComponent implements OnInit {
+
+    vcInt = 0;
     departments: any[] = [];
     positions: any[] = [];
     filterStatusList: any[] = [];
@@ -32,13 +35,16 @@ export class AccountComponent implements OnInit {
     sortField = 'employeeId';
     sortType = 'asc';
     sortMap = {
-        employeeId : 'ascend',
-        username   : null
+        employeeId: 'ascend',
+        username: null
     };
 
     valForm: FormGroup;
+    valPwdForm: FormGroup;
     isVisible = false;
+    isPwdVisible = false;
     isConfirmLoading = false;
+    isPwdConfirmLoading = false;
     maskClosable = false;
     dialogStatus = 'view'; // edit add
     curAccount = new Account();
@@ -52,11 +58,16 @@ export class AccountComponent implements OnInit {
 
         this.valForm = fb.group({
             employeeId: [null, Validators.required],
-            username: [null, Validators.required],
-            roleId: [null, Validators.required],
-            password: [null, null]
+            username: [null, [ ], [ this.confirmationUsername ] ],
+            roles: [null, Validators.required],
+            password: [null, [Validators.required, Validators.pattern(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/)]],
+            checkPassword: [ null, [ Validators.required, this.confirmationValidatorAdd ] ]
         });
 
+        this.valPwdForm = fb.group({
+            password: [null, [Validators.required, Validators.pattern(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/)]],
+            checkPassword: [ null, [ Validators.required, this.confirmationValidator ] ]
+        });
     }
 
     ngOnInit() {
@@ -132,19 +143,31 @@ export class AccountComponent implements OnInit {
 
     sort(sortName, value) {
         this.sortField = sortName;
-        if (value  === 'ascend') {
+        if (value === 'ascend') {
             this.sortType = 'asc';
         } else {
             this.sortType = 'desc';
         }
         Object.keys(this.sortMap).forEach(key => {
             if (key !== sortName) {
-                this.sortMap[ key ] = null;
+                this.sortMap[key] = null;
             } else {
-                this.sortMap[ key ] = value;
+                this.sortMap[key] = value;
             }
         });
         this.load(true);
+    }
+
+    displayRole(roles: Role[]) {
+        if (roles.length) {
+            let name = '';
+            for ( const role of roles) {
+                name = name + ',' + role.roleName ;
+            }
+            return name.substr(1, name.length);
+        } else {
+            return '超级管理员';
+        }
     }
 
     openDetail(data: Account, isEdit: boolean) {
@@ -169,7 +192,6 @@ export class AccountComponent implements OnInit {
 
     handleOk(e) {
         this.isConfirmLoading = true;
-
         if (this.dialogStatus === 'add') {
             this.http.post('/pm/account', this.valForm.value)
                 .subscribe((data: any) => {
@@ -201,8 +223,38 @@ export class AccountComponent implements OnInit {
         this.isVisible = false;
     }
 
+    openPassword(data: Account) {
+        this.curAccount = new Account();
+        this.curAccount = Object.assign({}, data);
+        this.isPwdVisible = true;
+        this.valPwdForm.reset(this.curAccount);
+    }
+
+    handlePwdOk(e) {
+        this.isPwdConfirmLoading = true;
+        this.http.put('/pm/account', Object.assign({}, this.valPwdForm.value, {username: this.curAccount.username}))
+            .subscribe((data: any) => {
+                this.isPwdConfirmLoading = false;
+                this.isPwdVisible = false;
+                this.getFilter();
+                this.load();
+            }, (err: any) => {
+                this.isPwdConfirmLoading = false;
+                this.showErr();
+                console.log(err);
+            });
+    }
+
+    handlePwdCancel(e) {
+        this.isPwdVisible = false;
+    }
+
     getFormControl(name) {
         return this.valForm.controls[name];
+    }
+
+    getPwdFormControl(name) {
+        return this.valPwdForm.controls[name];
     }
 
     showErr() {
@@ -213,5 +265,105 @@ export class AccountComponent implements OnInit {
                 nzDuration: 3 * 1000
             }
         );
+    }
+
+    lockAccount(account: Account) {
+        const newAccount = Object.assign({}, account);
+        newAccount.username = account.username;
+        newAccount.accountLocked = true;
+        this.http.put('/pm/account', newAccount)
+            .subscribe((data: any) => {
+                this.load();
+            }, (err: any) => {
+                this.showErr();
+                console.log(err);
+            });
+    }
+
+    unlockAccount(account: Account) {
+        const newAccount = Object.assign({}, account);
+        newAccount.username = account.username;
+        newAccount.accountLocked = false;
+        this.http.put('/pm/account', newAccount)
+            .subscribe((data: any) => {
+                this.load();
+            }, (err: any) => {
+                this.showErr();
+                console.log(err);
+            });
+    }
+
+    updateConfirmValidator() {
+        /** wait for refresh value */
+        setTimeout(_ => {
+            this.valPwdForm.controls[ 'checkPassword' ].updateValueAndValidity();
+        });
+    }
+
+    updateConfirmValidatorAdd() {
+        /** wait for refresh value */
+        setTimeout(_ => {
+            this.valForm.controls[ 'checkPassword' ].updateValueAndValidity();
+        });
+    }
+
+    updateConfirmValidatorAddUsername() {
+        /** wait for refresh value */
+        setTimeout(_ => {
+            this.valForm.controls[ 'username' ].updateValueAndValidity();
+        });
+    }
+
+    confirmationValidator = (control: FormControl): { [s: string]: boolean } => {
+        if (!control.value) {
+            return { required: true };
+        } else if (control.value !== this.valPwdForm.controls[ 'password' ].value) {
+            return { confirm: true, error: true };
+        }
+    }
+
+    confirmationValidatorAdd = (control: FormControl): { [s: string]: boolean } => {
+        if (!control.value) {
+            return { required: true };
+        } else if (control.value !== this.valForm.controls[ 'password' ].value) {
+            return { confirm: true, error: true };
+        }
+    }
+
+    confirmationUsername = (control: FormControl): any => {
+        return Observable.create((observer) => {
+            if (this.vcInt) {
+                clearTimeout(this.vcInt);
+            }
+
+            this.vcInt = setTimeout(() => {
+
+                if (!control.value || control.value.length < 3 || control.value.length > 30) {
+                    observer.next({error: true, required: true});
+                    observer.complete();
+                } else {
+                    this.http.get('/pm/account/checkUsername', {input: control.value})
+                        .subscribe((data: any) => {
+                            if ( data.result === false ) {
+                                observer.next({confirm: true, error: true});
+                                observer.complete();
+                            } else {
+                                observer.next(null);
+                                observer.complete();
+                            }
+                        }, (err: any) => {
+                            observer.next(null);
+                            observer.complete();
+                        });
+                }
+            }, 100);
+
+        });
+    };
+
+    _submitForm() {
+        for (const i in this.valPwdForm.controls) {
+            this.valPwdForm.controls[ i ].markAsDirty();
+        }
     }
 }
