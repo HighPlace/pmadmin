@@ -180,6 +180,52 @@
           [nzMaskClosable]="maskClosable">
     <ng-template #modalContent>
         <form nz-form [formGroup]="valForm" (ngSubmit)="submit()" role="form">
+
+            <div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label nz-form-item-required>部门</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('deptId')">
+                    <nz-select
+                        nzAllowClear
+                        [nzPlaceHolder]="'选择所属部门'"
+                        formControlName="deptId"
+                        [(ngModel)]="deptId"
+                        [nzShowSearch]="true"
+                        (ngModelChange)="setEmployeeIds($event)"
+                        [nzSize]="'large'"
+                        name="deptId">
+                        <nz-option
+                            *ngFor="let option of departments"
+                            [nzLabel]="option.deptName"
+                            [nzValue]="option.deptId">
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+
+            <div nz-row nz-form-item>
+                <div nz-form-label nz-col [nzSpan]="7">
+                    <label nz-form-item-required>员工</label>
+                </div>
+                <div nz-col [nzSpan]="12" nz-form-control [nzValidateStatus]="getFormControl('employeeId')">
+                    <nz-select
+                        nzAllowClear
+                        [nzPlaceHolder]="'选择员工'"
+                        formControlName="employeeId"
+                        [(ngModel)]="employeeId"
+                        [nzShowSearch]="true"
+                        [nzSize]="'large'"
+                        name="employeeId">
+                        <nz-option
+                            *ngFor="let option of employeeIds"
+                            [nzLabel]="option.employeeName"
+                            [nzValue]="option.employeeId">
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+<!--
             <div nz-row nz-form-item>
                 <div nz-form-label nz-col [nzSpan]="7">
                     <label nz-form-item-required>员工ID</label>
@@ -190,6 +236,7 @@
                     </nz-input>
                 </div>
             </div>
+            -->
             <div nz-row nz-form-item>
                 <div nz-form-label nz-col [nzSpan]="7">
                     <label nz-form-item-required>账号名称</label>

@@ -14,6 +14,7 @@ export class AccountComponent implements OnInit {
 
     vcInt = 0;
     departments: any[] = [];
+    employeeIds: any[] = [];
     positions: any[] = [];
     filterStatusList: any[] = [];
     statusList: any[] = [];
@@ -57,16 +58,17 @@ export class AccountComponent implements OnInit {
         this.statusList = statusList;
 
         this.valForm = fb.group({
+            deptId: [null, Validators.required],
             employeeId: [null, Validators.required],
-            username: [null, [ ], [ this.confirmationUsername ] ],
+            username: [null, [], [this.confirmationUsername]],
             roles: [null, Validators.required],
             password: [null, [Validators.required, Validators.pattern(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/)]],
-            checkPassword: [ null, [ Validators.required, this.confirmationValidatorAdd ] ]
+            checkPassword: [null, [Validators.required, this.confirmationValidatorAdd]]
         });
 
         this.valPwdForm = fb.group({
             password: [null, [Validators.required, Validators.pattern(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/)]],
-            checkPassword: [ null, [ Validators.required, this.confirmationValidator ] ]
+            checkPassword: [null, [Validators.required, this.confirmationValidator]]
         });
     }
 
@@ -97,6 +99,22 @@ export class AccountComponent implements OnInit {
                 this.showErr();
                 console.log(err);
             });
+    }
+
+    setEmployeeIds(deptId: Number) {
+        if (deptId) {
+            const params: any = {
+                deptId: deptId,
+                hasSysUser: false
+            };
+
+            this.http.get('/pm/employee', params).subscribe((data: any) => {
+                this.employeeIds = data.data || [];
+            }, (err: any) => {
+                this.showErr();
+                console.log(err);
+            });
+        }
     }
 
     load(reset?: boolean) {
@@ -161,8 +179,8 @@ export class AccountComponent implements OnInit {
     displayRole(roles: Role[]) {
         if (roles.length) {
             let name = '';
-            for ( const role of roles) {
-                name = name + ',' + role.roleName ;
+            for (const role of roles) {
+                name = name + ',' + role.roleName;
             }
             return name.substr(1, name.length);
         } else {
@@ -296,37 +314,37 @@ export class AccountComponent implements OnInit {
     updateConfirmValidator() {
         /** wait for refresh value */
         setTimeout(_ => {
-            this.valPwdForm.controls[ 'checkPassword' ].updateValueAndValidity();
+            this.valPwdForm.controls['checkPassword'].updateValueAndValidity();
         });
     }
 
     updateConfirmValidatorAdd() {
         /** wait for refresh value */
         setTimeout(_ => {
-            this.valForm.controls[ 'checkPassword' ].updateValueAndValidity();
+            this.valForm.controls['checkPassword'].updateValueAndValidity();
         });
     }
 
     updateConfirmValidatorAddUsername() {
         /** wait for refresh value */
         setTimeout(_ => {
-            this.valForm.controls[ 'username' ].updateValueAndValidity();
+            this.valForm.controls['username'].updateValueAndValidity();
         });
     }
 
     confirmationValidator = (control: FormControl): { [s: string]: boolean } => {
         if (!control.value) {
-            return { required: true };
-        } else if (control.value !== this.valPwdForm.controls[ 'password' ].value) {
-            return { confirm: true, error: true };
+            return {required: true};
+        } else if (control.value !== this.valPwdForm.controls['password'].value) {
+            return {confirm: true, error: true};
         }
     }
 
     confirmationValidatorAdd = (control: FormControl): { [s: string]: boolean } => {
         if (!control.value) {
-            return { required: true };
-        } else if (control.value !== this.valForm.controls[ 'password' ].value) {
-            return { confirm: true, error: true };
+            return {required: true};
+        } else if (control.value !== this.valForm.controls['password'].value) {
+            return {confirm: true, error: true};
         }
     }
 
@@ -344,7 +362,7 @@ export class AccountComponent implements OnInit {
                 } else {
                     this.http.get('/pm/account/checkUsername', {input: control.value})
                         .subscribe((data: any) => {
-                            if ( data.result === false ) {
+                            if (data.result === false) {
                                 observer.next({confirm: true, error: true});
                                 observer.complete();
                             } else {
@@ -363,7 +381,7 @@ export class AccountComponent implements OnInit {
 
     _submitForm() {
         for (const i in this.valPwdForm.controls) {
-            this.valPwdForm.controls[ i ].markAsDirty();
+            this.valPwdForm.controls[i].markAsDirty();
         }
     }
 }
